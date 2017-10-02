@@ -15,7 +15,10 @@ The price of the board as of now, is shown at the table below.
 
 |Store|System Price|Posting|Total|
 |:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
+|Baú da Eletrônica|237,92|34,97|272,89|
+|Mercado Livre|149,00|0,00|149,00|
+|4Hobby|214,99|16,10|231,09|
+
 
 * __Arduino Uno (All Manufacturers)__
 
@@ -35,7 +38,10 @@ The price of the board as of now, is shown at the table below.
 
 |Store|System Price|Posting|Total|
 |:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
+|Baú da Eletrônica|127,42|35,89|163,31|
+|Mercado Livre|40,00|41,00|81,00|
+|4Hobby|25,90|16,10|42,00|
+
 
 * __Parallella__
 
@@ -47,54 +53,38 @@ The price of the board as of now, is shown at the table below.
 
 |Store|System Price|Posting|Total|
 |:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
+|Baú da Eletrônica|NotFound|NotFound|NotFound|
+|Mercado Livre|905,00|858,16|1763,16|
+|4Hobby|NotFound|NotFound|NotFound|
 
 * __Beagle Board__
 
-The price of the board as of now, is shown at the table below.
+The Beagle boards are the most competitive direct competitor to the raspberry pi computers, and as such they offer some functionality that is comparable.
 
-|Store|System Price|Posting|Total|
-|:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
-
-* __PcDuino__
+The main difference encountered by the research was that the Beagle Board has a onboard flash storage, instead of an SD card, which makes it a bit complicated to prototype for, as you need to have it unplugged for the system to be able to alter the program, whereas on the Raspberry you can just plug in a second SD card.
 
 The price of the board as of now, is shown at the table below.
 
 |Store|System Price|Posting|Total|
 |:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
-
-* __Intel Galileo__
-
-The price of the board as of now, is shown at the table below.
-
-|Store|System Price|Posting|Total|
-|:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
+|Baú da Eletrônica|331,42|34,97|366,39|
+|Mercado Livre|NotFound|NotFound|NotFound|
+|4Hobby|NotFound|NotFound|NotFound|
 
 * __Intel NUC__
 
-The price of the board as of now, is shown at the table below.
+The NUC stands out in this list by not being a board, it is a fully fledged computer, running on intel's 64 bit platform, it doesn't have the usual components of a board, such as pinouts, but it overpowers any of the boards on this list. For big projects this would be viable, for our project it is overkill.
+
+The price of the computer as of now, is shown at the table below.
 
 |Store|System Price|Posting|Total|
 |:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
-
-* __Odroid (All Models)__
-
-The price of the board as of now, is shown at the table below.
-
-|Store|System Price|Posting|Total|
-|:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
-
-* __Banana Pi__
-
-The price of the board as of now, is shown at the table below.
-
-|Store|System Price|Posting|Total|
-|:-------------|:-------------|:------|:------|
-|System price|System|Postal|Total|
+|Baú da Eletrônica|NotFound|NotFound|NotFound|
+|Mercado Livre|1679,00|0,00|1679,00|
+|4Hobby|NotFound|NotFound|NotFound|
 
 ### Results:
+
+Based on the research, the prices and the availability of the components the group has opted to use the Raspberry Pi board, given the board is easy to find, has a name on the market, and a thriving community of users that have made tutorials for pretty much every aspect of the board.
+
+The project will be built on top of the Raspberry Pi architecture, running the native operating system, Raspbian.
