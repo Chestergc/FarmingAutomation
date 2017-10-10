@@ -5,3 +5,9 @@ This is just a file for sketching how the overall system will end up working. Al
 So, I've just sketched out the flowchart for the system, it's pretty simple, with almost no branching and it's pretty easy to run through it, a simple project for a simple course.
 
 I can already see that the problem will be the mathematical modeling, the programming will be easy.
+
+## FOR RASPI SETUP
+
+sudo vim /etc/init.d/superscript
+sudo chmod 755 /etc/init.d/superscript
+sudo update-rc.d superscript defaults
