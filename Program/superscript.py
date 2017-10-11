@@ -77,6 +77,9 @@ def shutdown():
 ##ACTUATING
 
 ##FEEDBACK LOOP
-
-while True:
+if __name__='__main__'
+    scrRun()
+    outputWater(checkWater(pin), time.time, pin)
+    recordJSON(checkWater(pin))
+    endOfCycle(10)
     ##THIS

@@ -8,6 +8,8 @@ I can already see that the problem will be the mathematical modeling, the progra
 
 ## FOR RASPI SETUP
 
+https://www.raspberrypi.org/documentation/installation/installing-images/mac.md
+
 sudo vim /etc/init.d/superscript
 sudo chmod 755 /etc/init.d/superscript
 sudo update-rc.d superscript defaults
