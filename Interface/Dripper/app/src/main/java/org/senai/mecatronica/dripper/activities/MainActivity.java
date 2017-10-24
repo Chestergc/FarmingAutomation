@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //intenção: sair do main e ir para login
-                Intent i = new Intent(MainActivity.this, GraphsActivity.class);
+                Intent i = new Intent(MainActivity.this, MenusActivity.class);
                 //inicia uma nova activity com a intenção i
                 startActivity(i);
 

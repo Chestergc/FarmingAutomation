@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="bottom">
+
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/background_light"
+        android:padding="6dp"
+        android:id="@+id/viewFlipperMenus">
+
+        <TextView
+            android:text="Irrigação"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textTitleIrrigation"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"/>
+
+        <TextView
+            android:text="Dados dos Sensores"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textTitleSensorData"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/linearLayoutGraphs">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="De:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textDateFromLabel"
+                    android:layout_weight="0.1"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="12dp"/>
+
+                <TextView
+                    android:text="dd/mm/aaaa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textDateFrom"
+                    android:layout_weight="0.8"
+                    android:elevation="1dp"/>
+
+                <Button
+                    android:layout_height="50dp"
+                    android:id="@+id/btnOpenCalendarFrom"
+                    android:background="@android:drawable/ic_menu_today"
+                    android:layout_width="50dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="A:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textDateToLabel"
+                    android:layout_weight="0.1"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="12dp"/>
+
+                <TextView
+                    android:text="dd/mm/aaaa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textDateTo"
+                    android:layout_weight="0.8"
+                    android:elevation="1dp"/>
+
+                <Button
+                    android:layout_height="50dp"
+                    android:id="@+id/btnOpenCalendarTo"
+                    android:background="@android:drawable/ic_menu_today"
+                    android:layout_width="50dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:text="Atualizar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnDatesUpdate"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/linearLayoutGraphs">
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:text="Configurações"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textTitleSettings"
+            android:layout_gravity="center_horizontal"
+            android:padding="8dp"/>
+
+    </ViewFlipper>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:padding="0dp"
+        android:gravity="center_vertical"
+        android:layout_height="75dp"
+        android:id="@+id/linearLayoutNavBtns">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@android:color/holo_blue_dark"
+            android:id="@+id/imgBtnIrrigationMenu"
+            android:layout_weight="1"
+            android:padding="0dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@android:color/holo_green_dark"
+            android:id="@+id/imgBtnSensorDataMenu"
+            android:layout_weight="1"
+            android:padding="0dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@android:color/holo_orange_dark"
+            android:id="@+id/imgBtnHistoricalDataMenu"
+            android:layout_weight="1"
+            android:padding="0dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@android:color/holo_purple"
+            android:id="@+id/imgBtnSettingsMenu"
+            android:layout_weight="1"
+            android:padding="0dp"/>
+
+    </LinearLayout>
+</LinearLayout>

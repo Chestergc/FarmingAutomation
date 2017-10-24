@@ -18,6 +18,9 @@
         <activity android:name=".activities.GraphsActivity"
                   android:windowSoftInputMode="stateHidden">
         </activity>
+        <activity android:name=".activities.MenusActivity"
+                  android:windowSoftInputMode="stateHidden">
+        </activity>
     </application>
 
 </manifest>
