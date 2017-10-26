@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dripper</string>
+    <string name="menu_irrigation">Irrigação</string>
+    <string name="menu_historical_data">Dados</string>
+    <string name="menu_sensor_data">Sensores</string>
+    <string name="menu_settings">Configurações</string>
 </resources>

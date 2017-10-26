@@ -13,6 +13,11 @@ import org.senai.mecatronica.dripper.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * Not used.
+ * Kept for future reference of calendar set/get date functionality.
+ * */
+
 public class GraphsActivity extends AppCompatActivity {
 
     TextView textDateFrom;

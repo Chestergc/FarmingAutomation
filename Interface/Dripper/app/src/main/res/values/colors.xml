@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#77b61c</color>
+    <color name="colorPrimaryDark">#CEBA9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--Bright Icons-->
+    <color name="colorBottomMenu">#77b61c</color>
+    <color name="colorBrightOrange">#FF471D</color>
+    <color name="colorBrightBlue">#3CBDE3</color>
+    <color name="colorBackground">#FDF8F8</color>
+    <color name="colorMainText">#CEBA9F</color>
+
+
 </resources>
