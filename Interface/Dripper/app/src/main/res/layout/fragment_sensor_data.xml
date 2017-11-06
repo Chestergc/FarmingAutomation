@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/sensor_data_fragment_content"
+             android:padding="24dp">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/tablerow_vertical_padding"
+        android:paddingLeft="@dimen/tablerow_horizontal_padding"
+        android:paddingRight="@dimen/tablerow_horizontal_padding"
+        android:paddingTop="@dimen/tablerow_vertical_padding">
+
+        <TextView
+            android:text="@string/sensor_data_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_temperature"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="10dp"
+            android:textSize="@dimen/text_size_sensor_data_labels"
+            android:gravity="left|center_vertical"/>
+
+        <TextView
+            android:text="25°C"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_temperature_data"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="center"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/tablerow_vertical_padding"
+        android:paddingLeft="@dimen/tablerow_horizontal_padding"
+        android:paddingRight="@dimen/tablerow_horizontal_padding"
+        android:paddingTop="@dimen/tablerow_vertical_padding">
+
+        <TextView
+            android:text="@string/sensor_data_moisture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_moisture_label"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="10dp"
+            android:textSize="@dimen/text_size_sensor_data_labels"
+            android:gravity="left|center_vertical"/>
+
+        <TextView
+            android:text="32%"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_moisture_data"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="center"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/tablerow_vertical_padding"
+        android:paddingLeft="@dimen/tablerow_horizontal_padding"
+        android:paddingRight="@dimen/tablerow_horizontal_padding"
+        android:paddingTop="@dimen/tablerow_vertical_padding">
+
+        <TextView
+            android:text="@string/sensor_data_luminosity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_luminosity_label"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="10dp"
+            android:textSize="@dimen/text_size_sensor_data_labels"
+            android:gravity="left|center_vertical"/>
+
+        <TextView
+            android:text="10000 LUX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_luminosity_data"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="center"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/tablerow_vertical_padding"
+        android:paddingLeft="@dimen/tablerow_horizontal_padding"
+        android:paddingRight="@dimen/tablerow_horizontal_padding"
+        android:paddingTop="@dimen/tablerow_vertical_padding">
+
+        <TextView
+            android:text="@string/sensor_data_soil_moisture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_soil_moisture_label"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="10dp"
+            android:textSize="@dimen/text_size_sensor_data_labels"
+            android:gravity="left|center_vertical"/>
+
+        <TextView
+            android:text="Médio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_sensor_soil_moisture_data"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="center"/>
+    </TableRow>
+</TableLayout>

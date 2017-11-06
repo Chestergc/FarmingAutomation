@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CustomTheme" parent="AppTheme">
+        <item name="colorAccent">@color/colorBrightOrange</item>
+        <item name="colorPrimary">@color/colorBrightBlue</item>
+        <item name="colorPrimaryDark">@color/colorBottomMenu</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:textColorPrimary">@color/colorMainText</item>
+    </style>
+
 </resources>

@@ -26,7 +26,7 @@ public class SettingsFragment extends Fragment {
 
     public static Fragment newInstance() {
         //instantiate fragment and add parameters to final variables
-        Fragment frag = new IrrigationFragment();
+        Fragment frag = new SettingsFragment();
         Bundle args = new Bundle();
         //args.putParameter(VARIABLE, parameter)
 
@@ -40,7 +40,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.historical_data_layout, container, false);
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     @Override

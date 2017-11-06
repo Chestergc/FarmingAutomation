@@ -2,4 +2,20 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="tablerow_vertical_padding">4dp</dimen>
+    <dimen name="tablerow_horizontal_padding">24dp</dimen>
+    <dimen name="center_btn_vertical_margin">8dp</dimen>
+    <dimen name="center_btn_horizontal_margin">16dp</dimen>
+    <dimen name="hr_horizontal_margin">4dp</dimen>
+    <dimen name="schedule_weekday_horizontal_margin">8dp</dimen>
+    <dimen name="schedule_text_vertical_margin">8dp</dimen>
+
+
+    <!--Text sizes-->
+    <dimen name="text_size_sensor_data_values">16dp</dimen>
+    <dimen name="text_size_sensor_data_labels">16dp</dimen>
+    <dimen name="text_size_irrigation_mode_label">16dp</dimen>
+    <dimen name="text_size_schedule_weekday">12dp</dimen>
+    <dimen name="text_size_schedule_text">14dp</dimen>
+
 </resources>

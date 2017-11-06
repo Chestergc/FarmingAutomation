@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    >
+
+    <Switch
+        android:text="@string/switch_auto_label"
+        android:layout_width="match_parent"
+        android:id="@+id/switch_auto_mode"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textSize="@dimen/text_size_irrigation_mode_label"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_height="40dp"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/hr_irrigation"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/switch_auto_mode"/>
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hr_irrigation"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/listview_schedules"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_plus"
+        android:id="@+id/act_btn_add_irrigation"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:baselineAlignBottom="false"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

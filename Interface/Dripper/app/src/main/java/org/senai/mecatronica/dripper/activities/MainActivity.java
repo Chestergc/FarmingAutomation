@@ -10,25 +10,30 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import org.senai.mecatronica.dripper.R;
+import org.senai.mecatronica.dripper.managers.DataManager;
 
 public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_ITEM = "arg_selected_item";
 
     private BottomNavigationView mBottomNav;
     private int currentSelectedItem;
+    private DataManager dataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //initialize data manager
+        dataManager = dataManager.getInstance(this);
+
+        //initialize bottom navigagion menu
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // handle desired actions here
                 selectFragment(item);
-
                 // return true to display the item as the selected item
                 return true;
             }
@@ -43,7 +48,23 @@ public class MainActivity extends AppCompatActivity {
             selectedItem = mBottomNav.getMenu().getItem(0);
         }
         selectFragment(selectedItem);
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_ITEM, currentSelectedItem);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        MenuItem homeItem = mBottomNav.getMenu().getItem(0);
+        if (currentSelectedItem != homeItem.getItemId()) {
+            // select home item
+            selectFragment(homeItem);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void selectFragment(MenuItem item){
@@ -54,11 +75,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_irrigation:
                 frag = IrrigationFragment.newInstance();
                 break;
-            case R.id.menu_historical_data:
-                frag = HistoricalDataFragment.newInstance();
-                break;
             case R.id.menu_sensor_data:
-                frag = SensorDataFragment.newInstance();
+                frag = SensorDataFragment.newInstance(25,32,10000,"Baixa");
                 break;
             case R.id.menu_settings:
                 frag = SettingsFragment.newInstance();
@@ -80,10 +98,9 @@ public class MainActivity extends AppCompatActivity {
         //adds a fragment transaction to the view container
         if (frag != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.container, frag, frag.getTag());
+            ft.replace(R.id.container, frag, frag.getTag());
             ft.commit();
         }
-
     }
 
     private void updateToolbarText(CharSequence text) {

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="start"
+              >
+
+    <ImageView
+        app:srcCompat="@drawable/ic_calendar"
+        android:layout_centerVertical="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:id="@+id/img_calendar"
+        android:layout_weight="0.2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:text="@string/scheduled_irrigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/img_calendar"
+            android:layout_toEndOf="@+id/img_calendar"
+            android:id="@+id/txt_scheduled_irrigation"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_schedule_text"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin">
+
+            <TextView
+                android:text="@string/schedule_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_calendar"
+                android:layout_toEndOf="@+id/img_calendar"
+                android:id="@+id/txt_schedule_start"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.1"/>
+
+            <TextView
+                android:text="15:30:50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_start_time"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/txt_schedule_start"
+                android:layout_toEndOf="@+id/txt_schedule_start"
+                android:layout_marginLeft="4dp"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.4"/>
+
+            <TextView
+                android:text="@string/schedule_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_end"
+                android:layout_alignBaseline="@+id/txt_schedule_start_time"
+                android:layout_alignBottom="@+id/txt_schedule_start_time"
+                android:layout_toRightOf="@+id/txt_schedule_start_time"
+                android:layout_toEndOf="@+id/txt_schedule_start_time"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_duration"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/txt_schedule_end"
+                android:layout_toEndOf="@+id/txt_schedule_end"
+                android:text="10s"
+                android:layout_marginLeft="4dp"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.4"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin">
+
+            <TextView
+                android:text="@string/schedule_monday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_monday"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_tuesday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_tuesday"
+                android:layout_toEndOf="@+id/txt_schedule_monday"
+                android:layout_toRightOf="@+id/txt_schedule_monday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_wednesday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_wednesday"
+                android:layout_toEndOf="@+id/txt_schedule_tuesday"
+                android:layout_toRightOf="@+id/txt_schedule_tuesday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_thursday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_thursday"
+                android:layout_toEndOf="@+id/txt_schedule_wednesday"
+                android:layout_toRightOf="@+id/txt_schedule_wednesday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_friday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_friday"
+                android:layout_toEndOf="@+id/txt_schedule_thursday"
+                android:layout_toRightOf="@+id/txt_schedule_thursday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_saturday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_saturday"
+                android:layout_toEndOf="@+id/txt_schedule_friday"
+                android:layout_toRightOf="@+id/txt_schedule_friday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_sunday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/txt_schedule_sunday"
+                android:layout_toEndOf="@+id/txt_schedule_saturday"
+                android:layout_toRightOf="@+id/txt_schedule_saturday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_show_menu"
+        android:layout_alignParentTop="false"
+        android:id="@+id/img_btn_item_schedule_menu"
+        android:background="@android:color/transparent"
+        android:layout_weight="0.2"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

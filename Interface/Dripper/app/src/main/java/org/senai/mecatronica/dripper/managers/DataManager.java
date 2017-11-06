@@ -9,6 +9,12 @@ import android.content.Context;
 
 public class DataManager {
 
+    private Integer currentTemperature;
+    private Integer currentMoisture;
+    private Integer currentLuminosity;
+    private String currentSoilMoisture;
+
+
     private DataManager(Context context) {
         super();
     }
@@ -21,5 +27,10 @@ public class DataManager {
         }
         return dataManager;
     }
+
+    public void update(){
+        //get data from json file and set to variables
+    }
+
 
 }

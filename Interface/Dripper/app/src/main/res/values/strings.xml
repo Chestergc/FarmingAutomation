@@ -1,7 +1,28 @@
 <resources>
     <string name="app_name">Dripper</string>
+
+    <!--Menu Strings-->
     <string name="menu_irrigation">Irrigação</string>
-    <string name="menu_historical_data">Dados</string>
     <string name="menu_sensor_data">Sensores</string>
     <string name="menu_settings">Configurações</string>
+
+    <!--Sensor fragment strings-->
+    <string name="sensor_data_temperature">Temperatura:</string>
+    <string name="sensor_data_moisture">Umidade:</string>
+    <string name="sensor_data_luminosity">Luminosidade:</string>
+    <string name="sensor_data_soil_moisture">Umidade do Solo:</string>
+
+    <!--Irrigation fragment strings-->
+    <string name="switch_auto_label">Modo Automático:</string>
+    <string name="schedule_monday">S</string>
+    <string name="schedule_tuesday">T</string>
+    <string name="schedule_wednesday">Q</string>
+    <string name="schedule_thursday">Q</string>
+    <string name="schedule_friday">S</string>
+    <string name="schedule_saturday">S</string>
+    <string name="schedule_sunday">D</string>
+    <string name="scheduled_irrigation">Irrigação Periódica</string>
+    <string name="schedule_start">Início:</string>
+    <string name="schedule_duration">Duração:</string>
+
 </resources>

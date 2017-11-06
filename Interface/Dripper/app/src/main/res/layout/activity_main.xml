@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         design:menu="@menu/bottom_nav_items"
-        />
+        android:background="@color/colorBackground"/>
 
 
 </LinearLayout>
