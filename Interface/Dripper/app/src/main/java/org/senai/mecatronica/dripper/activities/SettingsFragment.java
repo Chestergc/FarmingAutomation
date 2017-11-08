@@ -1,11 +1,13 @@
 package org.senai.mecatronica.dripper.activities;
 
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.senai.mecatronica.dripper.R;
 
@@ -13,27 +15,17 @@ import org.senai.mecatronica.dripper.R;
  * Created by Felipe on 26/10/2017.
  */
 
-public class SettingsFragment extends Fragment {
-
-    //fragment final variables
-    //private static final String ARG_PARAMETER = "arg_parameter";
-
-    //temporary variables relative to final
-    //private Object tempParameter;
-
-    //view elements
-    //private View mContent;
+public class SettingsFragment extends Fragment{
 
     public static Fragment newInstance() {
         //instantiate fragment and add parameters to final variables
         Fragment frag = new SettingsFragment();
         Bundle args = new Bundle();
-        //args.putParameter(VARIABLE, parameter)
+        //args.putInt(TEMPERATURE, temperature);
 
         frag.setArguments(args);
         return frag;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,23 +43,26 @@ public class SettingsFragment extends Fragment {
         if (savedInstanceState == null) {
             Bundle args = getArguments();
             //get data from bundle -> args.getData(DATA);
+            //temperature = args.getInt(TEMPERATURE);
+
 
         } else {
             //get data from savedInstanceState -> savedInstanceState.getData(DATA);
+           // temperature = savedInstanceState.getInt(TEMPERATURE);
+
         }
 
         // initialize view elements (textView, images...)
-        //viewElement = view.getViewById(R.id.viewElement)
 
         // set stuff to view elements (clickers, text, colors)
-        //viewElement.setStuff(Stuff);
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //update state with temp variables
-        //outState.putObject(ARG_PARAMETER, tempParameter);
         //*for string outState.putString(ARG_TEXT, text);
+
         super.onSaveInstanceState(outState);
     }
 }

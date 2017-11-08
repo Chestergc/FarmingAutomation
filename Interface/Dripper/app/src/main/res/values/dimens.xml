@@ -9,13 +9,16 @@
     <dimen name="hr_horizontal_margin">4dp</dimen>
     <dimen name="schedule_weekday_horizontal_margin">8dp</dimen>
     <dimen name="schedule_text_vertical_margin">8dp</dimen>
+    <dimen name="auto_mode_vertical_padding">24dp</dimen>
+    <dimen name="auto_mode_horizontal_padding">16dp</dimen>
 
 
     <!--Text sizes-->
-    <dimen name="text_size_sensor_data_values">16dp</dimen>
-    <dimen name="text_size_sensor_data_labels">16dp</dimen>
-    <dimen name="text_size_irrigation_mode_label">16dp</dimen>
-    <dimen name="text_size_schedule_weekday">12dp</dimen>
-    <dimen name="text_size_schedule_text">14dp</dimen>
+    <dimen name="text_size_sensor_data_values">16sp</dimen>
+    <dimen name="text_size_sensor_data_labels">16sp</dimen>
+    <dimen name="text_size_irrigation_mode_label">16sp</dimen>
+    <dimen name="text_size_schedule_weekday">12sp</dimen>
+    <dimen name="text_size_schedule_text">14sp</dimen>
+    <dimen name="text_size_last_update">12sp</dimen>
 
 </resources>

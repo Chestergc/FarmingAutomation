@@ -6,6 +6,7 @@
     <string name="menu_sensor_data">Sensores</string>
     <string name="menu_settings">Configurações</string>
 
+
     <!--Sensor fragment strings-->
     <string name="sensor_data_temperature">Temperatura:</string>
     <string name="sensor_data_moisture">Umidade:</string>
@@ -22,7 +23,11 @@
     <string name="schedule_saturday">S</string>
     <string name="schedule_sunday">D</string>
     <string name="scheduled_irrigation">Irrigação Periódica</string>
+    <string name="one_time_irrigation">Irrigação Programada</string>
     <string name="schedule_start">Início:</string>
     <string name="schedule_duration">Duração:</string>
+
+    <string name="menu_edit_item">Editar</string>
+    <string name="menu_delete">Excluir</string>
 
 </resources>

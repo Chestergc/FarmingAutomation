@@ -9,11 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import org.json.JSONException;
 import org.senai.mecatronica.dripper.R;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_ITEM = "arg_selected_item";
+    private static final String IRRIGATION_FILE = "default_irrigation_data.json";
+    private static final String FIELD_DATA_FILE = "default_field_data.json";
 
     private BottomNavigationView mBottomNav;
     private int currentSelectedItem;
@@ -25,9 +30,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //initialize data manager
-        dataManager = dataManager.getInstance(this);
+        dataManager = dataManager.getInstance(this, IRRIGATION_FILE, FIELD_DATA_FILE);
+        try{
+            dataManager.updateIrrigationData();
+        } catch (JSONException e){
+            System.out.println("Error creating JSON Object");
+        } catch (IOException e){
+            System.out.println("Could not read JSON File");
+        }
 
-        //initialize bottom navigagion menu
+        System.out.println("OK");
+
+        //initialize bottom navigation menu
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -73,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         //init corresponding fragment
         switch(itemID){
             case R.id.menu_irrigation:
-                frag = IrrigationFragment.newInstance();
+                frag = IrrigationFragment.newInstance(dataManager.getIrrigationDataList(), dataManager.getAutoMode());
                 break;
             case R.id.menu_sensor_data:
                 frag = SensorDataFragment.newInstance(25,32,10000,"Baixa");

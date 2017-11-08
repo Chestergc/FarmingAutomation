@@ -2,6 +2,8 @@ package org.senai.mecatronica.dripper.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,12 +13,14 @@ import java.util.List;
 public class IrrigationData implements Serializable{
 
     private Boolean oneTime;
-    private String start;
+    private String startTime;
+    private String startDate;
     private Integer duration;
     private List<String> weekDays;
+    private Integer id;
 
     public IrrigationData(){
-        this.weekDays = new ArrayList<String>();
+        this.weekDays = Collections.emptyList();
     }
 
     public Integer getDuration() {
@@ -35,19 +39,43 @@ public class IrrigationData implements Serializable{
         this.oneTime = oneTime;
     }
 
-    public String getStart() {
-        return start;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public List<String> getWeekDays() {
         return weekDays;
     }
 
-    public void addWeekDay(String weekDay) {
-        this.weekDays.add(weekDay);
+    public void setWeekDays(List<String> weekDays) {
+        this.weekDays = weekDays;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void clear(){
+        this.oneTime = false;
+        this.startTime = "";
+        this.startDate = "";
+        this.duration = 0;
+        this.weekDays = Collections.emptyList();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

@@ -3,9 +3,12 @@ package org.senai.mecatronica.dripper.adapters;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.senai.mecatronica.dripper.R;
@@ -53,6 +56,7 @@ public class SchedulesAdapter extends BaseAdapter {
                     R.layout.item_schedule, null);
         }
 
+        //initialize view elements
         IrrigationData data = getItem(position);
 
         TextView irrigationType = (TextView) convertView.findViewById(R.id.txt_scheduled_irrigation);
@@ -67,40 +71,64 @@ public class SchedulesAdapter extends BaseAdapter {
         TextView saturday = (TextView) convertView.findViewById(R.id.txt_schedule_saturday);
         TextView sunday = (TextView) convertView.findViewById(R.id.txt_schedule_sunday);
 
+        ImageButton optionsBtn = (ImageButton) convertView.findViewById(R.id.img_btn_item_schedule_menu);
 
+        //initialize clickers
+        optionsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //open edit menu passing data
+                PopupMenu popup = new PopupMenu(context, v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.menu_irrigation_item, popup.getMenu());
+                popup.show();
+            }
+        });
 
+        //set type of irrigation
         if(data.getOneTime()){
-            irrigationType.setText("Programada");
+            irrigationType.setText(context.getString(R.string.one_time_irrigation));
         }else{
-            irrigationType.setText("Periódica");
+            irrigationType.setText(context.getString(R.string.scheduled_irrigation));
         }
 
-        startTime.setText(data.getStart());
+        //set time and duration texts
+        startTime.setText(data.getStartTime());
         duration.setText(data.getDuration().toString()+"s");
 
+        //reset colors
+        monday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        tuesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        wednesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        thursday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        friday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        saturday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+        sunday.setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+
+        //put colors to selected weekdays
         List<String> weekdays = data.getWeekDays();
         for(String weekday : weekdays){
             switch (weekday){
                 case "Monday":
-                    monday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    monday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Tuesday":
-                    tuesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    tuesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Wednesday":
-                    wednesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    wednesday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Thursday":
-                    thursday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    thursday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Friday":
-                    friday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    friday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Saturday":
-                    saturday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    saturday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
                 case "Sunday":
-                    sunday.setTextColor(ContextCompat.getColor(this.context, R.color.colorBrightBlue));
+                    sunday.setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
                     break;
             }
         }

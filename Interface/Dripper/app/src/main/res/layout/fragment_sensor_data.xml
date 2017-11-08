@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:orientation="vertical"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:id="@+id/sensor_data_fragment_content"
-             android:padding="24dp">
+             android:id="@+id/sensor_data_fragment_content">
 
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/sensor_data_fragment_table"
+                 android:padding="24dp"
+                 android:layout_below="@+id/txt_sensor_last_update">
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +26,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_sensor_temperature"
             android:layout_weight="0.5"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/text_size_sensor_data_labels"
             android:gravity="left|center_vertical"/>
 
@@ -51,7 +55,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_sensor_moisture_label"
             android:layout_weight="0.5"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/text_size_sensor_data_labels"
             android:gravity="left|center_vertical"/>
 
@@ -80,7 +84,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_sensor_luminosity_label"
             android:layout_weight="0.5"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/text_size_sensor_data_labels"
             android:gravity="left|center_vertical"/>
 
@@ -109,7 +113,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_sensor_soil_moisture_label"
             android:layout_weight="0.5"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/text_size_sensor_data_labels"
             android:gravity="left|center_vertical"/>
 
@@ -122,4 +126,29 @@
             android:textSize="@dimen/text_size_sensor_data_values"
             android:gravity="center"/>
     </TableRow>
-</TableLayout>
+    </TableLayout>
+
+    <TextView
+        android:text="Última atualização dia: 10/11/17 hora: 13:50:00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txt_sensor_last_update"
+        android:padding="2dp"
+        android:background="@color/colorDarkBackground"
+        android:textColor="@color/colorBackground"
+        android:textSize="@dimen/text_size_last_update"
+        android:gravity="center"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorShadows"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/hr_sensor_data"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/sensor_data_fragment_table"/>
+</RelativeLayout>

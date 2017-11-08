@@ -1,0 +1,21 @@
+{
+	"auto":true,
+	"numberOftriggers":2,
+	"triggers":
+		[
+			{
+				"oneTime":true,
+				"startTime":"06:23:00",
+				"startDate":"11/11/2017",
+				"duration":30,
+				"daysOfTheWeek":[]
+			},
+			{
+				"oneTime":true,
+				"startTime":"00:00:00",
+				"startDate":"01/01/2018",
+				"duration":2,
+				"daysOfTheWeek":[]
+			}
+		]
+}
