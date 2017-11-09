@@ -1,5 +1,6 @@
 package org.senai.mecatronica.dripper.activities;
 
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -11,14 +12,16 @@ import android.view.MenuItem;
 
 import org.json.JSONException;
 import org.senai.mecatronica.dripper.R;
+import org.senai.mecatronica.dripper.beans.IrrigationData;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_ITEM = "arg_selected_item";
-    private static final String IRRIGATION_FILE = "default_irrigation_data.json";
-    private static final String FIELD_DATA_FILE = "default_field_data.json";
+//    private static final String IRRIGATION_FRAGMENT = "irrigation_fragment";
+//    private static final String FIELD_DATA_FRAGMENT = "field_data_fragment";
 
     private BottomNavigationView mBottomNav;
     private int currentSelectedItem;
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //initialize data manager
-        dataManager = dataManager.getInstance(this, IRRIGATION_FILE, FIELD_DATA_FILE);
+        dataManager = dataManager.getInstance(this);
         try{
             dataManager.updateIrrigationData();
         } catch (JSONException e){
@@ -53,20 +56,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //first menu to be loaded on app start
+        //restore saved instance state or create a new
         MenuItem selectedItem;
         if (savedInstanceState != null) {
+            //selected menu item
             currentSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
             selectedItem = mBottomNav.getMenu().findItem(currentSelectedItem);
         } else {
+            //selected menu item
             selectedItem = mBottomNav.getMenu().getItem(0);
         }
+
         selectFragment(selectedItem);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, currentSelectedItem);
+//        getSupportFragmentManager().putFragment(outState, IRRIGATION_FRAGMENT, irrigationFragmentInstance);
+//        getSupportFragmentManager().putFragment(outState, FIELD_DATA_FRAGMENT, fieldDataFragmentInstance);
         super.onSaveInstanceState(outState);
     }
 
@@ -84,13 +92,15 @@ public class MainActivity extends AppCompatActivity {
     private void selectFragment(MenuItem item){
         Fragment frag = null;
         int itemID = item.getItemId();
+
         //init corresponding fragment
         switch(itemID){
             case R.id.menu_irrigation:
-                frag = IrrigationFragment.newInstance(dataManager.getIrrigationDataList(), dataManager.getAutoMode());
+                frag = IrrigationFragment.newInstance();
                 break;
             case R.id.menu_sensor_data:
-                frag = SensorDataFragment.newInstance(25,32,10000,"Baixa");
+                frag =
+                SensorDataFragment.newInstance(25,32,10000,"Baixa");
                 break;
             case R.id.menu_settings:
                 frag = SettingsFragment.newInstance();
@@ -123,6 +133,5 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setTitle(text);
         }
     }
-
 
 }

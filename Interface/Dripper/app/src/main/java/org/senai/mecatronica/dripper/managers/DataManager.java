@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.senai.mecatronica.dripper.beans.IrrigationData;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,64 +29,74 @@ public class DataManager {
     //data labels
     private static final String LABEL_AUTO = "auto";
     private static final String LABEL_TRIGGERS_SIZE = "numberOfTriggers";
-    private static final String LABEL_TRIGGERS = "auto";
+    private static final String LABEL_TRIGGERS = "triggers";
     private static final String LABEL_IRRIGATION_TYPE = "oneTime";
     private static final String LABEL_START_TIME = "startTime";
     private static final String LABEL_START_DATE = "startDate";
     private static final String LABEL_DURATION = "duration";
     private static final String LABEL_WEEKDAYS = "daysOfTheWeek";
 
+    private static final String IRRIGATION_FILE = "default_irrigation_data.json";
+    private static final String FIELD_DATA_FILE = "default_field_data.json";
+
     //internal variables
     private Context context;
-    private String irrigationFileName;
-    private String fieldDataFileName;
-//    private Boolean readSuccessful;
 
     //Field Data
     private Integer currentTemperature;
     private Integer currentMoisture;
     private Integer currentLuminosity;
     private String currentSoilMoisture;
-//    private List<FieldData> historicalDataList;
 
     //Irrigation Data
-    Boolean autoMode = false;
-    List<IrrigationData> irrigationDataList;
+    private Boolean autoMode = false;
+    private List<IrrigationData> irrigationDataList;
 
     //singleton pattern
-    private DataManager(Context context, String irrigationFileName, String fieldDataFileName) {
+    private DataManager(Context context) {
         super();
         this.context = context;
-        this.irrigationFileName = irrigationFileName;
-        this.fieldDataFileName = fieldDataFileName;
-//        this.readSuccessful = false;
         irrigationDataList = new ArrayList<>();
     }
 
     private static DataManager dataManager;
 
-    public static DataManager getInstance(Context context, String irrigationFileName, String fieldDataFileName) {
+    public static DataManager getInstance(Context context) {
         if (dataManager == null) {
-            dataManager = new DataManager(context, irrigationFileName, fieldDataFileName);
+            dataManager = new DataManager(context);
         }
         return dataManager;
     }
 
     /**
+     * Check if database files exist in internal memory.
+     * */
+    private boolean fileExists(String fileName){
+        File file = context.getFileStreamPath(fileName);
+        return file.exists();
+    }
+
+    /**
      * Get data from database (JSON File) and update data manager's fields.
+     * If the file does not exist, create a new default file
      * */
     public void updateIrrigationData() throws JSONException, IOException{
+
+        if(!fileExists(IRRIGATION_FILE)){
+            //create file with default settings
+            writeDefaultIrrigationFile(IRRIGATION_FILE);
+        }
         //get data from json file and set to variables
-        String jsonString = getJSONData(context, irrigationFileName);
+        String jsonString = getJSONData(IRRIGATION_FILE);
         JSONObject irrigationDataObject = new JSONObject(jsonString);
         setIrrigationData(irrigationDataObject);
-
     }
 
     /**
      * Read file from internal storage and return a string with the contents of the file.
+     *
      * */
-    private String getJSONData(Context context, String jsonFileName) throws IOException{
+    private String getJSONData(String jsonFileName) throws IOException{
         String strJSON;
         StringBuilder buf = new StringBuilder();
         FileInputStream json;
@@ -104,7 +115,7 @@ public class DataManager {
      * Read data from JSON Object and set to data manager's instance
      * */
     private void setIrrigationData(JSONObject irrigationDataObject) throws JSONException{
-        setAutoMode(irrigationDataObject.getBoolean(LABEL_AUTO));
+        autoMode = irrigationDataObject.getBoolean(LABEL_AUTO);
         Integer numberOfTriggers = irrigationDataObject.getInt(LABEL_TRIGGERS_SIZE);
         JSONArray triggers = irrigationDataObject.getJSONArray(LABEL_TRIGGERS);
 
@@ -130,8 +141,95 @@ public class DataManager {
         }
     }
 
+    /**
+     * Write irrigation data from manager to database
+     * */
+    public void writeIrrigationFile() throws IOException{
+
+        //create a new writer with the file name given
+        JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
+        writer.setIndent("  ");
+        writer.beginObject();
+        //write current autoMode
+        writer.name(LABEL_AUTO).value(autoMode);
+
+        //write number of triggers
+        writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
+
+        writer.name(LABEL_TRIGGERS);
+        //write triggers list
+        writer.beginArray();
+        for(IrrigationData data : irrigationDataList){
+            //trigger object
+            writer.beginObject();
+            writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
+            writer.name(LABEL_START_TIME).value(data.getStartTime());
+            writer.name(LABEL_START_DATE).value(data.getStartDate());
+            writer.name(LABEL_DURATION).value(data.getDuration());
+            //weekdays array
+            writer.name(LABEL_WEEKDAYS);
+            writer.beginArray();
+            List<String> weekDays = data.getWeekDays();
+            for(String weekDay : weekDays){
+                writer.value(weekDay);
+            }
+            writer.endArray();
+            writer.endObject();
+        }
+        writer.endArray();
+        writer.endObject();
+
+        writer.flush();
+        writer.close();
+    }
+
+    private void writeDefaultIrrigationFile(String jsonFileName) throws IOException{
+
+        //create a new writer with the file name given
+        JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
+        writer.setIndent("  ");
+        writer.beginObject();
+            //write current autoMode
+            writer.name(LABEL_AUTO).value(false);
+
+            //write number of triggers
+            writer.name(LABEL_TRIGGERS_SIZE).value(0);
+
+            //write triggers list
+            writer.name(LABEL_TRIGGERS);
+                writer.beginArray();
+                writer.endArray();
+        writer.endObject();
+
+        writer.flush();
+        writer.close();
+    }
+
     public List<IrrigationData> getIrrigationDataList(){
         return this.irrigationDataList;
+    }
+
+    public void addIrrigationData(IrrigationData data){
+        irrigationDataList.add(data);
+        try{
+            writeIrrigationFile();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
+    }
+
+
+    public void removeIrrigationData(Integer id){
+
+    }
+
+    public void clearIrrigationData(){
+        irrigationDataList = new ArrayList<>();
+        try{
+            writeIrrigationFile();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
     }
 
     public Boolean getAutoMode(){
@@ -140,44 +238,11 @@ public class DataManager {
 
     public void setAutoMode(Boolean autoMode){
         this.autoMode = autoMode;
-    }
-
-    private void writeIrrigationFile(Context context, String jsonFileName) throws IOException{
-
-        //create a new writer with the file name given
-        JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
-        writer.setIndent("  ");
-        writer.beginObject();
-            //write current autoMode
-            writer.name(LABEL_AUTO).value(autoMode);
-
-            //write number of triggers
-            writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
-
-            //write triggers list
-            writer.beginArray();
-            for(IrrigationData data : irrigationDataList){
-                //trigger object
-                writer.beginObject();
-                    writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
-                    writer.name(LABEL_START_TIME).value(data.getStartTime());
-                    writer.name(LABEL_START_DATE).value(data.getStartDate());
-                    writer.name(LABEL_DURATION).value(data.getDuration());
-                    //weekdays array
-                    writer.name(LABEL_WEEKDAYS);
-                    writer.beginArray();
-                    List<String> weekDays = data.getWeekDays();
-                    for(String weekDay : weekDays){
-                        writer.value(weekDay);
-                    }
-                    writer.endArray();
-                writer.endObject();
-            }
-            writer.endArray();
-        writer.endObject();
-
-        writer.flush();
-        writer.close();
+        try{
+            writeIrrigationFile();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
     }
 
 }
