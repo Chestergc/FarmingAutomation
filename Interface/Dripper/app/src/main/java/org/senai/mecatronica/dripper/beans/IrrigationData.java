@@ -16,7 +16,7 @@ public class IrrigationData implements Serializable{
     private Boolean oneTime;
     private String startTime;
     private String startDate;
-    private List<Integer> duration;
+    private int[] duration;
     private HashMap<String, Boolean> weekDays;
 
     public IrrigationData(){
@@ -28,16 +28,22 @@ public class IrrigationData implements Serializable{
         this.weekDays.put("Thursday", false);
         this.weekDays.put("Friday", false);
         this.weekDays.put("Saturday", false);
-
+        this.duration = new int[]{0,0,0};
     }
 
-    public List<Integer> getDuration() {
+    public int[] getDuration() {
         return duration;
     }
 
-    public void setDuration(List<Integer> duration) {
+    public void setDuration(int[] duration) {
         this.duration = duration;
     }
+
+    public void setDurationSecs(int secs){ this.duration[2] = secs;}
+
+    public void setDurationMins(int mins){ this.duration[1] = mins;}
+
+    public void setDurationHours(int hours){ this.duration[0] = hours;}
 
     public Boolean getOneTime() {
         return oneTime;
@@ -72,6 +78,20 @@ public class IrrigationData implements Serializable{
         this.weekDays.put("Thursday", weekdays[4]);
         this.weekDays.put("Friday", weekdays[5]);
         this.weekDays.put("Saturday", weekdays[6]);
+    }
+
+    public boolean[] getWeekAsBoolArray(){
+
+        boolean weekBoolArray[] = new boolean[7];
+        weekBoolArray[0] = this.weekDays.get("Sunday");
+        weekBoolArray[1] = this.weekDays.get("Monday");
+        weekBoolArray[2] = this.weekDays.get("Tuesday");
+        weekBoolArray[3] = this.weekDays.get("Wednesday");
+        weekBoolArray[4] = this.weekDays.get("Thursday");
+        weekBoolArray[5] = this.weekDays.get("Friday");
+        weekBoolArray[6] = this.weekDays.get("Saturday");
+
+        return weekBoolArray;
     }
 
     public String getStartDate() {

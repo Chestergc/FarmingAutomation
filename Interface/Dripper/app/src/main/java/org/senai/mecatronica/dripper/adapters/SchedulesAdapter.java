@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -36,9 +37,11 @@ public class SchedulesAdapter extends BaseAdapter {
     private IrrigationData data;
     private TextView irrigationType;
     private TextView startTime;
-    private TextView duration ;
+    private TextView duration;
     private HashMap<String, TextView> weekMap;
     private ImageButton optionsBtn;
+    private LinearLayout weekdaysLayout;
+    private LinearLayout dateLayout;
 
     private IrrigationEditor irrigationEditor;
 
@@ -78,19 +81,32 @@ public class SchedulesAdapter extends BaseAdapter {
         //set type of irrigation
         if(data.getOneTime()){
             irrigationType.setText(context.getString(R.string.one_time_irrigation));
+            weekdaysLayout.setVisibility(View.GONE);
+            dateLayout.setVisibility(View.VISIBLE);
         }else{
             irrigationType.setText(context.getString(R.string.scheduled_irrigation));
+            weekdaysLayout.setVisibility(View.VISIBLE);
+            dateLayout.setVisibility(View.GONE);
         }
 
         //set time and duration texts
         startTime.setText(data.getStartTime());
         StringBuilder durationString = new StringBuilder();
-        durationString.append(data.getDuration().get(0).toString());
-        durationString.append("h ");
-        durationString.append(data.getDuration().get(1).toString());
-        durationString.append("m ");
-        durationString.append(data.getDuration().get(2).toString());
-        durationString.append("s");
+        int[] d = data.getDuration();
+        if(d[0] > 0){
+            durationString.append(d[0]);
+            durationString.append("h ");
+        }
+        if(d[1] > 0){
+            durationString.append(d[1]);
+            durationString.append("m ");
+        }
+        if(d[2] > 0){
+            durationString.append(d[2]);
+            durationString.append("s");
+        }
+
+
 
         duration.setText(durationString.toString());
 
@@ -114,6 +130,8 @@ public class SchedulesAdapter extends BaseAdapter {
         irrigationType = (TextView) convertView.findViewById(R.id.txt_scheduled_irrigation);
         startTime = (TextView) convertView.findViewById(R.id.txt_schedule_start_time);
         duration = (TextView) convertView.findViewById(R.id.txt_schedule_duration);
+        weekdaysLayout = (LinearLayout) convertView.findViewById(R.id.layout_schedule_weekdays);
+        dateLayout = (LinearLayout) convertView.findViewById(R.id.layout_schedule_date);
         weekMap = new HashMap<>(7);
         weekMap.put("Sunday", (TextView) convertView.findViewById(R.id.txt_schedule_sunday));
         weekMap.put("Monday",(TextView) convertView.findViewById(R.id.txt_schedule_monday));

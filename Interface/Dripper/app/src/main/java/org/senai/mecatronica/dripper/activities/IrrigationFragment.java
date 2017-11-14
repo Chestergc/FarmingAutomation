@@ -15,10 +15,13 @@ import android.widget.Switch;
 import org.senai.mecatronica.dripper.R;
 import org.senai.mecatronica.dripper.adapters.SchedulesAdapter;
 import org.senai.mecatronica.dripper.beans.IrrigationData;
+import org.senai.mecatronica.dripper.helpers.DateOperations;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -150,8 +153,6 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
                 //update database
                 DataManager.getInstance(getContext()).setAutoMode(isChecked);
 
-                //temporary remove all irrigation data
-                DataManager.getInstance(getContext()).clearIrrigationData();
                 updateIrrigationListView();
 
             }
@@ -187,16 +188,19 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
         irrigationListView.setAdapter(adapter);
     }
 
+    /**
+     * Opens up a new activity with the add code, passing the current time, date and
+     * other default parameters
+     * */
     private void addNewIrrigation(){
         Intent intent = new Intent(this.getContext(), EditIrrigationActivity.class);
 
-        //TODO get current time and date to populate new irrigation
-        String currentTime = "00:00:00";
-        String currentDate = "01/01/00";
-        int duration[] = {0,0,0};
+        String currentTime = DateOperations.getCurrentTime();
+        String currentDate = DateOperations.getCurrentDate();
+        int duration[] = {0,0,30};
         boolean weekdays[] = {false,false,false,false,false,false,false};
 
-        intent.putExtra(EXTRA_ONETIME, 1);
+        intent.putExtra(EXTRA_ONETIME, false);
         intent.putExtra(EXTRA_TIME, currentTime);
         intent.putExtra(EXTRA_DURATION, duration);
         intent.putExtra(EXTRA_DATE, currentDate);
@@ -204,29 +208,41 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
         startActivityForResult(intent, ADD_CODE);
     }
 
+    /**
+     * Opens up a new activity with the edit code passing the parameters of the
+     * current selected item on the list
+     * */
     public void editIrrigation(int id){
         Intent intent = new Intent(this.getContext(), EditIrrigationActivity.class);
 
-        //TODO get status from edit call
-        String currentTime = "00:00:00";
-        String currentDate = "01/01/00";
-        int duration[] = {0,0,0};
-        boolean weekdays[] = {false,false,false,false,false,false,false};
+        IrrigationData iData = DataManager.getInstance(getContext()).getIrrigationData(id);
+        String currentTime = iData.getStartTime();
+        String currentDate = iData.getStartDate();
+        int[] duration = iData.getDuration();
+        boolean[] weekDays = iData.getWeekAsBoolArray();
+        boolean oneTime = iData.getOneTime();
 
         intent.putExtra(EXTRA_ID, id);
-        intent.putExtra(EXTRA_ONETIME, 1);
+        intent.putExtra(EXTRA_ONETIME, oneTime);
         intent.putExtra(EXTRA_TIME, currentTime);
         intent.putExtra(EXTRA_DURATION, duration);
         intent.putExtra(EXTRA_DATE, currentDate);
-        intent.putExtra(EXTRA_WEEKDAYS, weekdays);
+        intent.putExtra(EXTRA_WEEKDAYS, weekDays);
         startActivityForResult(intent, EDIT_CODE);
     }
 
+    /**
+     * Deletes a selected item from the list
+     * */
     public void deleteIrrigation(int id){
         DataManager.getInstance(getContext()).removeIrrigationData(id);
         updateIrrigationListView();
     }
 
+    /**
+     * Treats data received from edit screen, adding or editing the chosen irrigation
+     * if the save button was pressed
+     * */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -235,27 +251,18 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
 
             //on return add new element to irrigation data list
             IrrigationData iData = new IrrigationData();
-//            iData.setOneTime(false);
-//            iData.setDuration(new ArrayList<>(Arrays.asList(0,0,30)));
-//            iData.setStartDate("11/02/13");
-//            iData.setStartTime("12:40:00");
-//            iData.setWeekDay("Monday", true);
-//            iData.setWeekDay("Wednesday", true);
-//            iData.setWeekDay("Friday", true);
 
             iData.setOneTime(data.getBooleanExtra(EXTRA_ONETIME, false));
-            iData.setDuration(data.getIntegerArrayListExtra(EXTRA_DURATION));
+            iData.setDuration(data.getIntArrayExtra(EXTRA_DURATION));
             iData.setStartDate(data.getStringExtra(EXTRA_DATE));
             iData.setStartTime(data.getStringExtra(EXTRA_TIME));
             iData.setWeekDays(data.getBooleanArrayExtra(EXTRA_WEEKDAYS));
             int id = data.getIntExtra(EXTRA_ID, 0);
 
             if(requestCode == ADD_CODE){
-                //TODO set unique id for every add
                 //update database
                 DataManager.getInstance(getContext()).addIrrigationData(iData);
             }else if(requestCode == EDIT_CODE){
-                //TODO get id from intent and replace data in list
                 DataManager.getInstance(getContext()).replaceIrrigationData(id, iData);
             }
         }

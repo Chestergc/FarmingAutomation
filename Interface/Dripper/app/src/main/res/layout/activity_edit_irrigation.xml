@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:entries="@array/spinner_irrigation_modes_array"
         android:prompt="@string/spinner_irrigation_modes_prompt"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         />
 
     <TextView
@@ -33,7 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lbl_edit_menu_time"
-        android:layout_below="@+id/spinner_edit_menu_mode"/>
+        android:layout_below="@+id/spinner_edit_menu_mode"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
     <EditText
         android:layout_width="@dimen/edit_menu_date_width"
@@ -42,7 +44,9 @@
         android:ems="10"
         android:id="@+id/txt_edit_menu_time"
         android:hint="12:00 PM"
-        android:layout_below="@+id/lbl_edit_menu_time"/>
+        android:layout_below="@+id/lbl_edit_menu_time"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
     <!--<View-->
         <!--android:layout_width="96dp"-->
@@ -66,6 +70,8 @@
         android:id="@+id/num_edit_menu_hours"
         android:layout_below="@id/lbl_edit_menu_duration"
         android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         />
 
     <!--<View-->
@@ -86,6 +92,7 @@
         android:layout_alignBottom="@id/num_edit_menu_hours"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="-4dp"
         />
 
     <EditText
@@ -97,6 +104,8 @@
         android:layout_below="@id/lbl_edit_menu_duration"
         android:layout_toRightOf="@id/lbl_edit_menu_hours"
         android:layout_toEndOf="@id/lbl_edit_menu_hours"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         />
 
 
@@ -120,6 +129,7 @@
         android:layout_alignBottom="@id/num_edit_menu_minutes"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginBottom="-4dp"
         />
 
     <EditText
@@ -131,6 +141,8 @@
         android:layout_below="@id/lbl_edit_menu_duration"
         android:layout_toRightOf="@id/lbl_edit_menu_minutes"
         android:layout_toEndOf="@id/lbl_edit_menu_minutes"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         />
 
     <!--<View-->
@@ -153,6 +165,7 @@
         android:layout_alignBottom="@id/num_edit_menu_seconds"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="-4dp"
         />
 
 
@@ -172,6 +185,8 @@
         android:id="@+id/date_edit_menu"
         android:hint="11/11/17"
         android:layout_below="@id/lbl_edit_menu_date"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         />
 
     <!--<View-->
@@ -185,24 +200,23 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/colorShadows"
         android:layout_marginTop="22dp"
         android:layout_below="@id/date_edit_menu"
-        android:id="@+id/layout_edit_menu_weekdays">
+        android:id="@+id/layout_edit_menu_weekdays"
+        android:layout_height="@dimen/edit_menu_week_height">
 
         <TextView
             android:text="@string/schedule_sunday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_sunday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:paddingTop="@dimen/text_size_edit_menu_weekday"
-            android:paddingBottom="@dimen/text_size_edit_menu_weekday"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -213,13 +227,14 @@
         <TextView
             android:text="@string/schedule_monday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_monday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -230,13 +245,14 @@
         <TextView
             android:text="@string/schedule_tuesday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_tuesday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -247,13 +263,14 @@
         <TextView
             android:text="@string/schedule_wednesday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_wednesday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -264,13 +281,14 @@
         <TextView
             android:text="@string/schedule_thursday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_thursday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -281,13 +299,14 @@
         <TextView
             android:text="@string/schedule_friday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_friday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
         <View
             android:layout_width="@dimen/edit_menu_divisor_width"
@@ -298,13 +317,14 @@
         <TextView
             android:text="@string/schedule_saturday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/week_pick_saturday"
             android:textColor="@color/colorBackground"
             android:layout_weight="1"
             android:textAlignment="center"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_edit_menu_weekday"/>
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
 
 
 

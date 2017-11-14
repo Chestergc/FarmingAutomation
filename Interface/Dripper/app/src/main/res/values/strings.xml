@@ -32,6 +32,7 @@
     <string name="one_time_irrigation">Irrigação Programada</string>
     <string name="schedule_start">Início:</string>
     <string name="schedule_duration">Duração:</string>
+    <string name="schedule_date">Data:</string>
 
     <string name="menu_edit_item">Editar</string>
     <string name="menu_delete">Excluir</string>
@@ -43,5 +44,7 @@
 
     <string name="edit_menu_btn_cancel">Cancelar</string>
     <string name="edit_menu_btn_save">Salvar</string>
+
+    <string name="dialog_btn_confirm">Confirmar</string>
 
 </resources>

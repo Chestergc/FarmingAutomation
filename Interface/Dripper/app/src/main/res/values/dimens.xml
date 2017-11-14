@@ -12,9 +12,10 @@
     <dimen name="auto_mode_vertical_padding">24dp</dimen>
     <dimen name="auto_mode_horizontal_padding">16dp</dimen>
     <dimen name="edit_menu_divisor_width">1dip</dimen>
-    <dimen name="edit_menu_duration_number_width">40dp</dimen>
+    <dimen name="edit_menu_duration_number_width">32dp</dimen>
     <dimen name="edit_menu_time_width">96dp</dimen>
     <dimen name="edit_menu_date_width">96dp</dimen>
+    <dimen name="edit_menu_week_height">40dp</dimen>
 
 
     <!--Text sizes-->

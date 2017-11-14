@@ -1,6 +1,7 @@
 package org.senai.mecatronica.dripper.managers;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.JsonWriter;
 
 import org.json.JSONArray;
@@ -98,6 +99,7 @@ public class DataManager {
      * Read file from internal storage and return a string with the contents of the file.
      *
      * */
+    @NonNull
     private String getJSONData(String jsonFileName) throws IOException{
         String strJSON;
         StringBuilder buf = new StringBuilder();
@@ -136,7 +138,7 @@ public class DataManager {
             int minutes = (durationSecs % 3600) / 60;
             int seconds = durationSecs % 60;
 
-            ArrayList<Integer> durationArray = new ArrayList<>(Arrays.asList(hours, minutes, seconds));
+            int[] durationArray = new int[]{hours,minutes,seconds};
             data.setDuration(durationArray);
 
             JSONArray daysOfTheWeek = trigger.getJSONArray(LABEL_WEEKDAYS);
@@ -151,56 +153,59 @@ public class DataManager {
     /**
      * Write irrigation data from manager to database
      * */
-    public void writeIrrigationFile() throws IOException{
-        //TODO handle exception inside method
-        //create a new writer with the file name given
-        JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
-        writer.setIndent("  ");
-        writer.beginObject();
-        //write current autoMode
-        writer.name(LABEL_AUTO).value(autoMode);
-
-        //write number of triggers
-        writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
-
-        writer.name(LABEL_TRIGGERS);
-        //write triggers list
-        writer.beginArray();
-        for(IrrigationData data : irrigationDataList){
-            //trigger object
+    public void writeIrrigationFile(){
+        try{
+            //create a new writer with the file name given
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
+            writer.setIndent("  ");
             writer.beginObject();
-            writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
-            writer.name(LABEL_START_TIME).value(data.getStartTime());
-            writer.name(LABEL_START_DATE).value(data.getStartDate());
-            List<Integer> durationArray = data.getDuration();
-            //convert hours, mins, secs to secs
-            //TODO check conversions from seconds
-            int finalDuration = (durationArray.get(0)*3600)+(durationArray.get(1)*60)+durationArray.get(2);
-            writer.name(LABEL_DURATION).value(finalDuration);
-            //weekdays array
-            writer.name(LABEL_WEEKDAYS);
+            //write current autoMode
+            writer.name(LABEL_AUTO).value(autoMode);
+
+            //write number of triggers
+            writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
+
+            writer.name(LABEL_TRIGGERS);
+            //write triggers list
             writer.beginArray();
-            for(String weekDay : data.getWeekDays().keySet()){
-                if(data.getWeekDays().get(weekDay)){
-                    writer.value(weekDay);
+            for(IrrigationData data : irrigationDataList){
+                //trigger object
+                writer.beginObject();
+                writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
+                writer.name(LABEL_START_TIME).value(data.getStartTime());
+                writer.name(LABEL_START_DATE).value(data.getStartDate());
+                int[] durationArray = data.getDuration();
+                //convert hours, mins, secs to secs
+                int finalDuration = (durationArray[0]*3600)+(durationArray[1]*60)+durationArray[2];
+                writer.name(LABEL_DURATION).value(finalDuration);
+                //weekdays array
+                writer.name(LABEL_WEEKDAYS);
+                writer.beginArray();
+                for(String weekDay : data.getWeekDays().keySet()){
+                    if(data.getWeekDays().get(weekDay)){
+                        writer.value(weekDay);
+                    }
                 }
+                writer.endArray();
+                writer.endObject();
             }
             writer.endArray();
             writer.endObject();
-        }
-        writer.endArray();
-        writer.endObject();
 
-        writer.flush();
-        writer.close();
+            writer.flush();
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
-    private void writeDefaultIrrigationFile(String jsonFileName) throws IOException{
-        //TODO handle exception inside method
-        //create a new writer with the file name given
-        JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
-        writer.setIndent("  ");
-        writer.beginObject();
+    private void writeDefaultIrrigationFile(String jsonFileName){
+        try{
+            //create a new writer with the file name given
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
+            writer.setIndent("  ");
+            writer.beginObject();
             //write current autoMode
             writer.name(LABEL_AUTO).value(false);
 
@@ -209,12 +214,16 @@ public class DataManager {
 
             //write triggers list
             writer.name(LABEL_TRIGGERS);
-                writer.beginArray();
-                writer.endArray();
-        writer.endObject();
+            writer.beginArray();
+            writer.endArray();
+            writer.endObject();
 
-        writer.flush();
-        writer.close();
+            writer.flush();
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     public List<IrrigationData> getIrrigationDataList(){
@@ -223,41 +232,25 @@ public class DataManager {
 
     public void addIrrigationData(IrrigationData data){
         irrigationDataList.add(data);
-        try{
-            writeIrrigationFile();
-        } catch (IOException e) {
-            System.out.println("Error writing file");
-        }
+        writeIrrigationFile();
     }
 
     public void removeIrrigationData(int id){
         if(!irrigationDataList.isEmpty() && irrigationDataList.size()>id){
             irrigationDataList.remove(id);
-        }
-        try{
             writeIrrigationFile();
-        } catch (IOException e) {
-            System.out.println("Error writing file");
         }
     }
 
     public void replaceIrrigationData(Integer id, IrrigationData data){
         irrigationDataList.set(id, data);
-        try{
-            writeIrrigationFile();
-        } catch (IOException e) {
-            System.out.println("Error writing file");
-        }
+        writeIrrigationFile();
     }
 
 
     public void clearIrrigationData(){
         irrigationDataList = new ArrayList<>();
-        try{
-            writeIrrigationFile();
-        } catch (IOException e) {
-            System.out.println("Error writing file");
-        }
+        writeIrrigationFile();
     }
 
     public Boolean getAutoMode(){
@@ -266,14 +259,16 @@ public class DataManager {
 
     public void setAutoMode(Boolean autoMode){
         this.autoMode = autoMode;
-        try{
-            writeIrrigationFile();
-        } catch (IOException e) {
-            System.out.println("Error writing file");
-        }
+        writeIrrigationFile();
+    }
+
+    public IrrigationData getIrrigationData(int id){
+        return irrigationDataList.get(id);
     }
 
     public int getId(IrrigationData data){
         return irrigationDataList.indexOf(data);
     }
+
+    //TODO implement reading from field data file
 }
