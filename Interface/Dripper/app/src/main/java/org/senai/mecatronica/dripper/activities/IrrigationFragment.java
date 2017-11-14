@@ -1,14 +1,10 @@
 package org.senai.mecatronica.dripper.activities;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +19,8 @@ import org.senai.mecatronica.dripper.managers.DataManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Setup irrigation parameters
@@ -36,13 +33,24 @@ import java.util.List;
  *
  */
 
-public class IrrigationFragment extends Fragment {
+public class IrrigationFragment extends Fragment implements IrrigationEditor{
 
     //fragment data labels
 //    private static final String AUTO_MODE = "arg_autoMode";
 //    private static final String IRRIGATION_DATA = "arg_irrigationData";
 //    private static final String IRRIGATION_DATA_ITEM = "arg_irrigationData";
 //    private static final String IRRIGATION_DATA_PREFS = "prefs_irrigation_data";
+
+    //extras labels for intent
+    private static final String EXTRA_ONETIME = "extra_mode";
+    private static final String EXTRA_DATE = "extra_date";
+    private static final String EXTRA_TIME = "extra_time";
+    private static final String EXTRA_DURATION = "extra_duration_s";
+    private static final String EXTRA_WEEKDAYS = "extra_weekdays";
+    private static final String EXTRA_ID = "extra_id";
+
+    private static final Integer ADD_CODE = 1;
+    private static final Integer EDIT_CODE = 2;
 
     //temporary variables relative to final
 //    private Boolean isAuto;
@@ -123,20 +131,7 @@ public class IrrigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Start add irrigation activity with intent
-
-                //on return add new element to irrigation data list
-                IrrigationData data = new IrrigationData();
-                data.setId(10);
-                data.setOneTime(false);
-                data.setDuration(39);
-                data.setStartDate("11/02/13");
-                data.setStartTime("12:40:00");
-                data.setWeekDays(Arrays.asList("Monday", "Wednesday","Saturday"));
-//                irrigationDataList.add(data);
-
-                //update database
-                DataManager.getInstance(getContext()).addIrrigationData(data);
-                updateIrrigationListView();
+                addNewIrrigation();
             }
         });
 
@@ -188,8 +183,107 @@ public class IrrigationFragment extends Fragment {
     private void updateIrrigationListView(){
         //set schedules to listview through custom adapter
         SchedulesAdapter adapter = new SchedulesAdapter(this.getContext(),
-                DataManager.getInstance(getContext()).getIrrigationDataList());
+                DataManager.getInstance(getContext()).getIrrigationDataList(), this);
         irrigationListView.setAdapter(adapter);
     }
 
+    private void addNewIrrigation(){
+        Intent intent = new Intent(this.getContext(), EditIrrigationActivity.class);
+
+        //TODO get current time and date to populate new irrigation
+        String currentTime = "00:00:00";
+        String currentDate = "01/01/00";
+        int duration[] = {0,0,0};
+        boolean weekdays[] = {false,false,false,false,false,false,false};
+
+        intent.putExtra(EXTRA_ONETIME, 1);
+        intent.putExtra(EXTRA_TIME, currentTime);
+        intent.putExtra(EXTRA_DURATION, duration);
+        intent.putExtra(EXTRA_DATE, currentDate);
+        intent.putExtra(EXTRA_WEEKDAYS, weekdays);
+        startActivityForResult(intent, ADD_CODE);
+    }
+
+    public void editIrrigation(int id){
+        Intent intent = new Intent(this.getContext(), EditIrrigationActivity.class);
+
+        //TODO get status from edit call
+        String currentTime = "00:00:00";
+        String currentDate = "01/01/00";
+        int duration[] = {0,0,0};
+        boolean weekdays[] = {false,false,false,false,false,false,false};
+
+        intent.putExtra(EXTRA_ID, id);
+        intent.putExtra(EXTRA_ONETIME, 1);
+        intent.putExtra(EXTRA_TIME, currentTime);
+        intent.putExtra(EXTRA_DURATION, duration);
+        intent.putExtra(EXTRA_DATE, currentDate);
+        intent.putExtra(EXTRA_WEEKDAYS, weekdays);
+        startActivityForResult(intent, EDIT_CODE);
+    }
+
+    public void deleteIrrigation(int id){
+        DataManager.getInstance(getContext()).removeIrrigationData(id);
+        updateIrrigationListView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+
+            //on return add new element to irrigation data list
+            IrrigationData iData = new IrrigationData();
+//            iData.setOneTime(false);
+//            iData.setDuration(new ArrayList<>(Arrays.asList(0,0,30)));
+//            iData.setStartDate("11/02/13");
+//            iData.setStartTime("12:40:00");
+//            iData.setWeekDay("Monday", true);
+//            iData.setWeekDay("Wednesday", true);
+//            iData.setWeekDay("Friday", true);
+
+            iData.setOneTime(data.getBooleanExtra(EXTRA_ONETIME, false));
+            iData.setDuration(data.getIntegerArrayListExtra(EXTRA_DURATION));
+            iData.setStartDate(data.getStringExtra(EXTRA_DATE));
+            iData.setStartTime(data.getStringExtra(EXTRA_TIME));
+            iData.setWeekDays(data.getBooleanArrayExtra(EXTRA_WEEKDAYS));
+            int id = data.getIntExtra(EXTRA_ID, 0);
+
+            if(requestCode == ADD_CODE){
+                //TODO set unique id for every add
+                //update database
+                DataManager.getInstance(getContext()).addIrrigationData(iData);
+            }else if(requestCode == EDIT_CODE){
+                //TODO get id from intent and replace data in list
+                DataManager.getInstance(getContext()).replaceIrrigationData(id, iData);
+            }
+        }
+
+        updateIrrigationListView();
+    }
+
+    public static String getExtraOnetime() {
+        return EXTRA_ONETIME;
+    }
+
+    public static String getExtraDate() {
+        return EXTRA_DATE;
+    }
+
+    public static String getExtraTime() {
+        return EXTRA_TIME;
+    }
+
+    public static String getExtraDuration() {
+        return EXTRA_DURATION;
+    }
+
+    public static String getExtraWeekdays() {
+        return EXTRA_WEEKDAYS;
+    }
+
+    public static String getExtraId(){
+        return EXTRA_ID;
+    }
 }

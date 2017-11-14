@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Could not read JSON File");
         }
 
-        System.out.println("OK");
-
         //initialize bottom navigation menu
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

@@ -6,7 +6,6 @@
     <string name="menu_sensor_data">Sensores</string>
     <string name="menu_settings">Configurações</string>
 
-
     <!--Sensor fragment strings-->
     <string name="sensor_data_temperature">Temperatura:</string>
     <string name="sensor_data_moisture">Umidade:</string>
@@ -15,6 +14,13 @@
 
     <!--Irrigation fragment strings-->
     <string name="switch_auto_label">Modo Automático:</string>
+    <string-array
+        name="spinner_irrigation_modes_array">
+        <item>Programada</item>
+        <item>Periódica</item>
+    </string-array>
+    <string name="spinner_irrigation_modes_prompt"></string>
+
     <string name="schedule_monday">S</string>
     <string name="schedule_tuesday">T</string>
     <string name="schedule_wednesday">Q</string>
@@ -29,5 +35,13 @@
 
     <string name="menu_edit_item">Editar</string>
     <string name="menu_delete">Excluir</string>
+
+    <string name="edit_menu_mode">Tipo</string>
+    <string name="edit_menu_time">Hora</string>
+    <string name="edit_menu_date">Data</string>
+    <string name="edit_menu_duration">Duração</string>
+
+    <string name="edit_menu_btn_cancel">Cancelar</string>
+    <string name="edit_menu_btn_save">Salvar</string>
 
 </resources>

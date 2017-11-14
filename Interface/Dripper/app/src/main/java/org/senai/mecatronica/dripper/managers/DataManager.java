@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -129,14 +131,19 @@ public class DataManager {
             data.setOneTime(trigger.getBoolean(LABEL_IRRIGATION_TYPE));
             data.setStartTime(trigger.getString(LABEL_START_TIME));
             data.setStartDate(trigger.getString(LABEL_START_DATE));
-            data.setDuration(trigger.getInt(LABEL_DURATION));
+            int durationSecs = trigger.getInt(LABEL_DURATION);
+            int hours = durationSecs / 3600;
+            int minutes = (durationSecs % 3600) / 60;
+            int seconds = durationSecs % 60;
+
+            ArrayList<Integer> durationArray = new ArrayList<>(Arrays.asList(hours, minutes, seconds));
+            data.setDuration(durationArray);
 
             JSONArray daysOfTheWeek = trigger.getJSONArray(LABEL_WEEKDAYS);
-            List<String> weekDays = new ArrayList<>();
+
             for(int j = 0; j < daysOfTheWeek.length(); j++){
-                weekDays.add(daysOfTheWeek.getString(j));
+                data.setWeekDay(daysOfTheWeek.getString(j),true);
             }
-            data.setWeekDays(weekDays);
             irrigationDataList.add(data);
         }
     }
@@ -145,7 +152,7 @@ public class DataManager {
      * Write irrigation data from manager to database
      * */
     public void writeIrrigationFile() throws IOException{
-
+        //TODO handle exception inside method
         //create a new writer with the file name given
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
         writer.setIndent("  ");
@@ -165,13 +172,18 @@ public class DataManager {
             writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
             writer.name(LABEL_START_TIME).value(data.getStartTime());
             writer.name(LABEL_START_DATE).value(data.getStartDate());
-            writer.name(LABEL_DURATION).value(data.getDuration());
+            List<Integer> durationArray = data.getDuration();
+            //convert hours, mins, secs to secs
+            //TODO check conversions from seconds
+            int finalDuration = (durationArray.get(0)*3600)+(durationArray.get(1)*60)+durationArray.get(2);
+            writer.name(LABEL_DURATION).value(finalDuration);
             //weekdays array
             writer.name(LABEL_WEEKDAYS);
             writer.beginArray();
-            List<String> weekDays = data.getWeekDays();
-            for(String weekDay : weekDays){
-                writer.value(weekDay);
+            for(String weekDay : data.getWeekDays().keySet()){
+                if(data.getWeekDays().get(weekDay)){
+                    writer.value(weekDay);
+                }
             }
             writer.endArray();
             writer.endObject();
@@ -184,7 +196,7 @@ public class DataManager {
     }
 
     private void writeDefaultIrrigationFile(String jsonFileName) throws IOException{
-
+        //TODO handle exception inside method
         //create a new writer with the file name given
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
         writer.setIndent("  ");
@@ -218,10 +230,26 @@ public class DataManager {
         }
     }
 
-
-    public void removeIrrigationData(Integer id){
-
+    public void removeIrrigationData(int id){
+        if(!irrigationDataList.isEmpty() && irrigationDataList.size()>id){
+            irrigationDataList.remove(id);
+        }
+        try{
+            writeIrrigationFile();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
     }
+
+    public void replaceIrrigationData(Integer id, IrrigationData data){
+        irrigationDataList.set(id, data);
+        try{
+            writeIrrigationFile();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
+    }
+
 
     public void clearIrrigationData(){
         irrigationDataList = new ArrayList<>();
@@ -245,4 +273,7 @@ public class DataManager {
         }
     }
 
+    public int getId(IrrigationData data){
+        return irrigationDataList.indexOf(data);
+    }
 }

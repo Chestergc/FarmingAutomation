@@ -11,6 +11,10 @@
     <dimen name="schedule_text_vertical_margin">8dp</dimen>
     <dimen name="auto_mode_vertical_padding">24dp</dimen>
     <dimen name="auto_mode_horizontal_padding">16dp</dimen>
+    <dimen name="edit_menu_divisor_width">1dip</dimen>
+    <dimen name="edit_menu_duration_number_width">40dp</dimen>
+    <dimen name="edit_menu_time_width">96dp</dimen>
+    <dimen name="edit_menu_date_width">96dp</dimen>
 
 
     <!--Text sizes-->
@@ -20,5 +24,6 @@
     <dimen name="text_size_schedule_weekday">12sp</dimen>
     <dimen name="text_size_schedule_text">14sp</dimen>
     <dimen name="text_size_last_update">12sp</dimen>
+    <dimen name="text_size_edit_menu_weekday">16sp</dimen>
 
 </resources>
