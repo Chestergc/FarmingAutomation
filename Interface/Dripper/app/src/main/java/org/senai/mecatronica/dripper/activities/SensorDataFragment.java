@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.senai.mecatronica.dripper.R;
+import org.senai.mecatronica.dripper.managers.DataManager;
+
+import java.util.Locale;
 
 /**
  * Created by Felipe on 26/10/2017.
@@ -28,7 +31,6 @@ public class SensorDataFragment extends Fragment {
     private Integer luminosity;
     private String soilMoisture;
 
-
     //view elements
     private View mContent;
     private TextView temperatureData;
@@ -36,16 +38,18 @@ public class SensorDataFragment extends Fragment {
     private TextView luminosityData;
     private TextView soilMoistureData;
 
-    public static Fragment newInstance(Integer temperature, Integer moisture, Integer luminosity, String soilMoisture) {
+    public static Fragment newInstance() {
         //instantiate fragment and add parameters to final variables
         Fragment frag = new SensorDataFragment();
-        Bundle args = new Bundle();
-        args.putInt(TEMPERATURE, temperature);
-        args.putInt(MOISTURE, moisture);
-        args.putInt(LUMINOSITY, luminosity);
-        args.putString(SOIL_MOISTURE, soilMoisture);
 
-        frag.setArguments(args);
+
+//        Bundle args = new Bundle();
+//        args.putInt(TEMPERATURE, temperature);
+//        args.putInt(MOISTURE, moisture);
+//        args.putInt(LUMINOSITY, luminosity);
+//        args.putString(SOIL_MOISTURE, soilMoisture);
+//
+//        frag.setArguments(args);
         return frag;
     }
 
@@ -63,21 +67,22 @@ public class SensorDataFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // retrieve data from bundle or savedInstanceState
-        if (savedInstanceState == null) {
-            Bundle args = getArguments();
-            //get data from bundle -> args.getData(DATA);
-            temperature = args.getInt(TEMPERATURE);
-            moisture = args.getInt(MOISTURE);
-            luminosity = args.getInt(LUMINOSITY);
-            soilMoisture = args.getString(SOIL_MOISTURE);
+//        if (savedInstanceState == null) {
+//            Bundle args = getArguments();
+//            //get data from bundle -> args.getData(DATA);
+//            temperature = args.getInt(TEMPERATURE);
+//            moisture = args.getInt(MOISTURE);
+//            luminosity = args.getInt(LUMINOSITY);
+//            soilMoisture = args.getString(SOIL_MOISTURE);
+//
+//        } else {
+//            //get data from savedInstanceState -> savedInstanceState.getData(DATA);
+//            temperature = savedInstanceState.getInt(TEMPERATURE);
+//            moisture = savedInstanceState.getInt(MOISTURE);
+//            luminosity = savedInstanceState.getInt(LUMINOSITY);
+//            soilMoisture = savedInstanceState.getString(SOIL_MOISTURE);
+//        }
 
-        } else {
-            //get data from savedInstanceState -> savedInstanceState.getData(DATA);
-            temperature = savedInstanceState.getInt(TEMPERATURE);
-            moisture = savedInstanceState.getInt(MOISTURE);
-            luminosity = savedInstanceState.getInt(LUMINOSITY);
-            soilMoisture = savedInstanceState.getString(SOIL_MOISTURE);
-        }
 
         // initialize view elements (textView, images...)
         mContent = view.findViewById(R.id.sensor_data_fragment_content);
@@ -86,11 +91,7 @@ public class SensorDataFragment extends Fragment {
         luminosityData = (TextView) view.findViewById(R.id.txt_sensor_luminosity_data);
         soilMoistureData = (TextView) view.findViewById(R.id.txt_sensor_soil_moisture_data);
 
-        // set stuff to view elements (clickers, text, colors)
-        temperatureData.setText(temperature.toString() + "°C");
-        moistureData.setText(moisture.toString() + "%");
-        luminosityData.setText(luminosity.toString() + " Lux");
-        soilMoistureData.setText(soilMoisture);
+        updateSensorDataValues();
     }
 
     @Override
@@ -102,6 +103,19 @@ public class SensorDataFragment extends Fragment {
         outState.putString(SOIL_MOISTURE, soilMoisture);
         //*for string outState.putString(ARG_TEXT, text);
         super.onSaveInstanceState(outState);
+    }
+
+    private void updateSensorDataValues(){
+        temperature = DataManager.getInstance(getContext()).getCurrentTemperature();
+        moisture = DataManager.getInstance(getContext()).getCurrentMoisture();
+        luminosity = DataManager.getInstance(getContext()).getCurrentLuminosity();
+        soilMoisture = DataManager.getInstance(getContext()).getCurrentSoilMoisture();
+
+        temperatureData.setText(temperature == null ? "N/A" : (temperature.toString() + "°C"));
+        moistureData.setText(moisture == null ? "N/A" : (moisture.toString() + "%"));
+        luminosityData.setText(luminosity == null ? "N/A" : (luminosity.toString() + " Lux"));
+        soilMoistureData.setText(soilMoisture == null ? "N/A" : soilMoisture);
+
     }
 
 }

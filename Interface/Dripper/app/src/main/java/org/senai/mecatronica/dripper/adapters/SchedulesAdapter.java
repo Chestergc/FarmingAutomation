@@ -37,6 +37,7 @@ public class SchedulesAdapter extends BaseAdapter {
     private IrrigationData data;
     private TextView irrigationType;
     private TextView startTime;
+    private TextView startDate;
     private TextView duration;
     private HashMap<String, TextView> weekMap;
     private ImageButton optionsBtn;
@@ -106,8 +107,6 @@ public class SchedulesAdapter extends BaseAdapter {
             durationString.append("s");
         }
 
-
-
         duration.setText(durationString.toString());
 
         //put colors to selected weekdays
@@ -116,9 +115,12 @@ public class SchedulesAdapter extends BaseAdapter {
             if(weekdays.get(weekday)){
                 weekMap.get(weekday).setTextColor(ContextCompat.getColor(this.context, R.color.colorAccent));
             } else {
-                weekMap.get(weekday).setTextColor(ContextCompat.getColor(this.context, R.color.colorPrimaryDark));
+                weekMap.get(weekday).setTextColor(ContextCompat.getColor(this.context, R.color.colorShadows));
             }
         }
+
+        //set date text
+        startDate.setText(data.getStartDate());
 
         return convertView;
     }
@@ -129,6 +131,7 @@ public class SchedulesAdapter extends BaseAdapter {
         optionsBtn.setTag(position);
         irrigationType = (TextView) convertView.findViewById(R.id.txt_scheduled_irrigation);
         startTime = (TextView) convertView.findViewById(R.id.txt_schedule_start_time);
+        startDate = (TextView) convertView.findViewById(R.id.txt_schedule_date);
         duration = (TextView) convertView.findViewById(R.id.txt_schedule_duration);
         weekdaysLayout = (LinearLayout) convertView.findViewById(R.id.layout_schedule_weekdays);
         dateLayout = (LinearLayout) convertView.findViewById(R.id.layout_schedule_date);

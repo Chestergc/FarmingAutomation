@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import org.senai.mecatronica.dripper.R;
 import org.senai.mecatronica.dripper.adapters.SchedulesAdapter;
@@ -64,6 +65,7 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
 
     private Switch switchAutoMode;
     private FloatingActionButton btnAddIrrigation;
+    private TextView txtLastIrrigation;
     private View grayOutArea;
     private ListView irrigationListView;
 
@@ -126,9 +128,9 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
         btnAddIrrigation = (FloatingActionButton) view.findViewById(R.id.act_btn_add_irrigation);
         grayOutArea = view.findViewById(R.id.listview_schedules_grayout);
         irrigationListView = (ListView) view.findViewById(R.id.listview_schedules);
+        txtLastIrrigation = (TextView) view.findViewById(R.id.txt_last_irrigation);
 
         // set stuff to view elements (clickers, text, colors)
-
         //add irrigation button click listener
         btnAddIrrigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +162,11 @@ public class IrrigationFragment extends Fragment implements IrrigationEditor{
 
         //retrieve auto mode state
         switchAutoMode.setChecked(DataManager.getInstance(getContext()).getAutoMode());
+
+        StringBuilder lastIrrigationString = new StringBuilder();
+        lastIrrigationString.append("Última irrigação feita em: ");
+        lastIrrigationString.append(DataManager.getInstance(getContext()).getLastIrrigation());
+        txtLastIrrigation.setText(lastIrrigationString);
 
         //populate list of schedules taken from db
         updateIrrigationListView();

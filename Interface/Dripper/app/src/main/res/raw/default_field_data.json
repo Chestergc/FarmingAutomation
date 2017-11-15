@@ -3,5 +3,10 @@
 	"lastIrrigationTime":"No data",
 	"logFrequency":0,
 	"numberOfLogs":0,
-	"logs": []
+	"logs": [{
+      "temperature":0,
+      "moisture":0,
+      "luminosity":0,
+      "soilMoisture":"Low"
+    }]
 }

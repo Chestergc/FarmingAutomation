@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * Reads from and writes to database (JSON local file)
  *
- * Created by Felipe on 24/10/2017.
  */
 
 public class DataManager {
@@ -39,6 +38,15 @@ public class DataManager {
     private static final String LABEL_DURATION = "duration";
     private static final String LABEL_WEEKDAYS = "daysOfTheWeek";
 
+    private static final String LABEL_LAST_IRRIGATION = "lastIrrigationTime";
+    private static final String LABEL_LOG_FREQUENCY = "logFrequency";
+    private static final String LABEL_NUM_LOGS = "numberOfLogs";
+    private static final String LABEL_LOGS = "logs";
+    private static final String LABEL_TEMPERATURE = "temperature";
+    private static final String LABEL_MOISTURE = "moisture";
+    private static final String LABEL_LUMINOSITY = "luminosity";
+    private static final String LABEL_SOIL_MOISTURE = "soilMoisture";
+
     private static final String IRRIGATION_FILE = "default_irrigation_data.json";
     private static final String FIELD_DATA_FILE = "default_field_data.json";
 
@@ -50,6 +58,7 @@ public class DataManager {
     private Integer currentMoisture;
     private Integer currentLuminosity;
     private String currentSoilMoisture;
+    private String lastIrrigation;
 
     //Irrigation Data
     private Boolean autoMode = false;
@@ -93,6 +102,17 @@ public class DataManager {
         String jsonString = getJSONData(IRRIGATION_FILE);
         JSONObject irrigationDataObject = new JSONObject(jsonString);
         setIrrigationData(irrigationDataObject);
+    }
+
+    public void updateSensorData() throws IOException, JSONException{
+        if(!fileExists(FIELD_DATA_FILE)){
+            //create file with default settings
+            writeDefaultFieldDataFile(FIELD_DATA_FILE);
+        }
+        //get data from json file and set to variables
+        String jsonString = getJSONData(FIELD_DATA_FILE);
+        JSONObject fieldDataObject = new JSONObject(jsonString);
+        setFieldData(fieldDataObject);
     }
 
     /**
@@ -148,6 +168,27 @@ public class DataManager {
             }
             irrigationDataList.add(data);
         }
+    }
+
+    private void setFieldData(JSONObject fieldDataObject) throws JSONException{
+
+        //set default values
+        currentTemperature = null;
+        currentMoisture = null;
+        currentLuminosity = null;
+        currentSoilMoisture = null;
+
+        lastIrrigation = fieldDataObject.getString(LABEL_LAST_IRRIGATION);
+        if(fieldDataObject.getInt(LABEL_NUM_LOGS) > 0){
+            JSONArray logs = fieldDataObject.getJSONArray(LABEL_LOGS);
+            JSONObject lastLog = logs.getJSONObject(0);
+            currentTemperature = lastLog.getInt(LABEL_TEMPERATURE);
+            currentMoisture = lastLog.getInt(LABEL_MOISTURE);
+            currentLuminosity = lastLog.getInt(LABEL_LUMINOSITY);
+            currentSoilMoisture = lastLog.getString(LABEL_SOIL_MOISTURE);
+        }
+
+        //TODO get data from last irrigation
     }
 
     /**
@@ -226,6 +267,41 @@ public class DataManager {
 
     }
 
+    private void writeDefaultFieldDataFile(String jsonFileName){
+//        {
+//        "lastIrrigationTime":"-",
+//        "logFrequency":0,
+//        "numberOfLogs":0,
+//        "logs": []
+//    }
+        try{
+            //create a new writer with the file name given
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
+            writer.setIndent("  ");
+            writer.beginObject();
+            //write last irrigation time
+            writer.name(LABEL_LAST_IRRIGATION).value("-");
+
+            //write log frequency
+            writer.name(LABEL_LOG_FREQUENCY).value(0);
+
+            //write log list size
+            writer.name(LABEL_NUM_LOGS).value(0);
+
+            //write logs list
+            writer.name(LABEL_LOGS);
+            writer.beginArray();
+            writer.endArray();
+            writer.endObject();
+
+            writer.flush();
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
     public List<IrrigationData> getIrrigationDataList(){
         return this.irrigationDataList;
     }
@@ -246,7 +322,6 @@ public class DataManager {
         irrigationDataList.set(id, data);
         writeIrrigationFile();
     }
-
 
     public void clearIrrigationData(){
         irrigationDataList = new ArrayList<>();
@@ -270,5 +345,23 @@ public class DataManager {
         return irrigationDataList.indexOf(data);
     }
 
-    //TODO implement reading from field data file
+    public Integer getCurrentTemperature() {
+        return currentTemperature;
+    }
+
+    public Integer getCurrentMoisture() {
+        return currentMoisture;
+    }
+
+    public Integer getCurrentLuminosity() {
+        return currentLuminosity;
+    }
+
+    public String getCurrentSoilMoisture() {
+        return currentSoilMoisture;
+    }
+
+    public String getLastIrrigation(){
+        return lastIrrigation;
+    }
 }

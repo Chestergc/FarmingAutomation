@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         dataManager = dataManager.getInstance(this);
         try{
             dataManager.updateIrrigationData();
+            dataManager.updateSensorData();
         } catch (JSONException e){
             System.out.println("Error creating JSON Object");
         } catch (IOException e){
@@ -97,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 frag = IrrigationFragment.newInstance();
                 break;
             case R.id.menu_sensor_data:
-                frag =
-                SensorDataFragment.newInstance(25,32,10000,"Baixa");
+
+                frag = SensorDataFragment.newInstance();
                 break;
             case R.id.menu_settings:
                 frag = SettingsFragment.newInstance();

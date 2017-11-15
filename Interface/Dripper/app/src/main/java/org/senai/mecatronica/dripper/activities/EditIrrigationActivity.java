@@ -45,6 +45,7 @@ public class EditIrrigationActivity extends AppCompatActivity {
 
     private Boolean oneTime;
     private int id;
+    private Boolean[] selectedWeekdays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,6 @@ public class EditIrrigationActivity extends AppCompatActivity {
         setupClickListeners();
 
     }
-
-
 
     /**
      * Initialize variables for each view element
@@ -103,9 +102,14 @@ public class EditIrrigationActivity extends AppCompatActivity {
         }
 
         boolean week[] = parameters.getBooleanArrayExtra(IrrigationFragment.getExtraWeekdays());
+        selectedWeekdays = new Boolean[7];
         for(int i = 0; i < week.length; i++){
             if(week[i]){
+                selectedWeekdays[i] = true;
                 weekDays.get(i).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+            } else {
+                selectedWeekdays[i] = false;
+                weekDays.get(i).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorShadows));
             }
         }
     }
@@ -190,8 +194,14 @@ public class EditIrrigationActivity extends AppCompatActivity {
             });
         }
 
-        //TODO set click listeners for week layout
-
+        for(final TextView day : weekDays){
+            day.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chooseWeekDay(day);
+                }
+            });
+        }
 
     }
 
@@ -213,9 +223,8 @@ public class EditIrrigationActivity extends AppCompatActivity {
         intent.putExtra(IrrigationFragment.getExtraDuration(), durationParams);
 
         boolean[] weekParams = new boolean[7];
-        //TODO: implement week choice logic
         for(int i = 0; i < weekParams.length; i++){
-            weekParams[i] = true;
+            weekParams[i] = selectedWeekdays[i];
         }
         intent.putExtra(IrrigationFragment.getExtraWeekdays(), weekParams);
 
@@ -233,15 +242,13 @@ public class EditIrrigationActivity extends AppCompatActivity {
      * Checks if entered data is valid for sending to intent.
      * */
     private boolean checkIrrigationParameters(String mode){
-        boolean durationOk = false;
-        boolean weekDaysOk = true;
-        //TODO check if weekday is chosen
 
         String time = editTime.getText().toString();
         String date = editDate.getText().toString();
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd/MM/yy h:mm a", Locale.getDefault());
 
         try {
             //check time
@@ -253,17 +260,23 @@ public class EditIrrigationActivity extends AppCompatActivity {
             //check date if chosen mode is onetime
             if(mode.equals(ONE_TIME)){
                 Date d = dateFormat.parse(date);
-                //if
+                //check if date format is valid
                 if(!date.equals(dateFormat.format(d)) && mode.equals(ONE_TIME)){
                     Toast.makeText(context,"Formato de data inválido", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                //TODO check if date and time is before current time
+                //check if date and time is before current time
+                Date fullDate = fullDateFormat.parse(date + " " + time);
+                if(DateOperations.isPast(fullDate)){
+                    Toast.makeText(context, "Escolha uma data no futuro", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
             }
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
 
+        boolean durationOk = false;
         //Check if at least one of the duration fields is not zero
         for(EditText field : editDuration){
             if(!field.getText().toString().equals("0")){
@@ -276,11 +289,16 @@ public class EditIrrigationActivity extends AppCompatActivity {
         }
 
         //check if any weekday is checked
-//        if(mode.equals(SCHEDULED)){
-//            for(TextView weekDay : weekDays){
-//
-//            }
-//        }
+        if(mode.equals(SCHEDULED)){
+            boolean weekDaysOk = false;
+            for(Boolean day : selectedWeekdays){
+                if(day){weekDaysOk = true;}
+            }
+            if(!weekDaysOk){
+                Toast.makeText(context, "Escolha ao menos um dia da semana", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
 
         return true;
     }
@@ -308,5 +326,41 @@ public class EditIrrigationActivity extends AppCompatActivity {
 
         d.show();
 
+    }
+
+    private void chooseWeekDay(TextView day){
+        switch (day.getId()){
+            case R.id.week_pick_sunday:
+                toggleWeekDayStatus(0);
+                break;
+            case R.id.week_pick_monday:
+                toggleWeekDayStatus(1);
+                break;
+            case R.id.week_pick_tuesday:
+                toggleWeekDayStatus(2);
+                break;
+            case R.id.week_pick_wednesday:
+                toggleWeekDayStatus(3);
+                break;
+            case R.id.week_pick_thursday:
+                toggleWeekDayStatus(4);
+                break;
+            case R.id.week_pick_friday:
+                toggleWeekDayStatus(5);
+                break;
+            case R.id.week_pick_saturday:
+                toggleWeekDayStatus(6);
+                break;
+        }
+    }
+
+    private void toggleWeekDayStatus(int index){
+        if(selectedWeekdays[index]){
+            weekDays.get(index).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorShadows));
+            selectedWeekdays[index] = false;
+        } else{
+            weekDays.get(index).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+            selectedWeekdays[index] = true;
+        }
     }
 }

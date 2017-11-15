@@ -15,18 +15,18 @@
         android:text="@string/edit_menu_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lbl_edit_menu_mode"/>
+        android:id="@+id/lbl_edit_menu_mode"
+        android:paddingLeft="@dimen/edit_menu_label_padding"/>
 
     <Spinner
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
         android:id="@+id/spinner_edit_menu_mode"
         android:layout_below="@+id/lbl_edit_menu_mode"
         android:layout_height="wrap_content"
         android:entries="@array/spinner_irrigation_modes_array"
         android:prompt="@string/spinner_irrigation_modes_prompt"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="-4dp"
         />
 
     <TextView
@@ -35,10 +35,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/lbl_edit_menu_time"
         android:layout_below="@+id/spinner_edit_menu_mode"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/edit_menu_label_padding"
+        />
 
     <EditText
-        android:layout_width="@dimen/edit_menu_date_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="time"
         android:ems="10"
@@ -46,6 +48,7 @@
         android:hint="12:00 PM"
         android:layout_below="@+id/lbl_edit_menu_time"
         android:focusable="false"
+        android:paddingTop="2dp"
         android:focusableInTouchMode="false"/>
 
     <!--<View-->
@@ -61,7 +64,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/lbl_edit_menu_duration"
         android:layout_below="@id/txt_edit_menu_time"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:paddingLeft="@dimen/edit_menu_label_padding"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        />
 
     <EditText
         android:layout_width="@dimen/edit_menu_duration_number_width"
@@ -72,7 +77,8 @@
         android:ems="10"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        />
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"/>
 
     <!--<View-->
         <!--android:layout_width="@dimen/edit_menu_duration_number_width"-->
@@ -92,7 +98,7 @@
         android:layout_alignBottom="@id/num_edit_menu_hours"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="-4dp"
+        android:layout_marginBottom="4dp"
         />
 
     <EditText
@@ -106,6 +112,8 @@
         android:layout_toEndOf="@id/lbl_edit_menu_hours"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
         />
 
 
@@ -129,7 +137,7 @@
         android:layout_alignBottom="@id/num_edit_menu_minutes"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginBottom="-4dp"
+        android:layout_marginBottom="4dp"
         />
 
     <EditText
@@ -143,6 +151,8 @@
         android:layout_toEndOf="@id/lbl_edit_menu_minutes"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
         />
 
     <!--<View-->
@@ -165,7 +175,7 @@
         android:layout_alignBottom="@id/num_edit_menu_seconds"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="-4dp"
+        android:layout_marginBottom="4dp"
         />
 
 
@@ -175,10 +185,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/lbl_edit_menu_date"
         android:layout_below="@id/num_edit_menu_hours"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/edit_menu_label_padding"/>
 
     <EditText
-        android:layout_width="@dimen/edit_menu_date_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="date"
         android:ems="10"
@@ -187,6 +198,7 @@
         android:layout_below="@id/lbl_edit_menu_date"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
         />
 
     <!--<View-->

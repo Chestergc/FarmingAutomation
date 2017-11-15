@@ -28,7 +28,7 @@ public class DateOperations {
     public static void setDate(Context context, final EditText text){
 
         //get current date as a calendar instance
-        final Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -95,4 +95,12 @@ public class DateOperations {
         return date;
     }
 
+    public static boolean isPast(Date date){
+        Calendar c = Calendar.getInstance();
+        Date now = c.getTime();
+        if(date.before(now)){
+            return true;
+        }
+        return false;
+    }
 }
