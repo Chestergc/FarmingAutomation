@@ -19,15 +19,16 @@
         <item>Programada</item>
         <item>Periódica</item>
     </string-array>
-    <string name="spinner_irrigation_modes_prompt"></string>
+    <string name="spinner_irrigation_modes_prompt">""</string>
 
+    <string name="schedule_sunday">D</string>
     <string name="schedule_monday">S</string>
     <string name="schedule_tuesday">T</string>
     <string name="schedule_wednesday">Q</string>
     <string name="schedule_thursday">Q</string>
     <string name="schedule_friday">S</string>
     <string name="schedule_saturday">S</string>
-    <string name="schedule_sunday">D</string>
+
     <string name="scheduled_irrigation">Irrigação Periódica</string>
     <string name="one_time_irrigation">Irrigação Programada</string>
     <string name="schedule_start">Início:</string>
@@ -46,5 +47,18 @@
     <string name="edit_menu_btn_save">Salvar</string>
 
     <string name="dialog_btn_confirm">Confirmar</string>
+
+    <string name="sync_btn">SYNC</string>
+    <string name="config_btn">CONFIG</string>
+    <string name="title_activity_settings">Configurações</string>
+
+    <!-- Strings related to Settings -->
+    <string name="settings_mac_address">Endereço MAC</string>
+    <string name="settings_default_mac_address">00:00:00:00:00:00</string>
+    <string name="settings_user_manual">Manual do Usuário</string>
+    <string name="settings_faq">Perguntas Frequentes</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_clear_data">Apagar Dados</string>
+    <string name="shared_prefs_filename">org.senai.mecatronica.dripper.sharedPrefs</string>
 
 </resources>

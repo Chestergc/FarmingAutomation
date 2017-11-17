@@ -11,8 +11,6 @@ import android.widget.TextView;
 import org.senai.mecatronica.dripper.R;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
-import java.util.Locale;
-
 /**
  * Created by Felipe on 26/10/2017.
  */
@@ -97,10 +95,10 @@ public class SensorDataFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //update state with temp variables
-        outState.putInt(TEMPERATURE, temperature);
-        outState.putInt(MOISTURE, moisture);
-        outState.putInt(LUMINOSITY, luminosity);
-        outState.putString(SOIL_MOISTURE, soilMoisture);
+//        outState.putInt(TEMPERATURE, temperature);
+//        outState.putInt(MOISTURE, moisture);
+//        outState.putInt(LUMINOSITY, luminosity);
+//        outState.putString(SOIL_MOISTURE, soilMoisture);
         //*for string outState.putString(ARG_TEXT, text);
         super.onSaveInstanceState(outState);
     }

@@ -1,6 +1,7 @@
 package org.senai.mecatronica.dripper.managers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.JsonWriter;
 
@@ -16,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -47,11 +46,15 @@ public class DataManager {
     private static final String LABEL_LUMINOSITY = "luminosity";
     private static final String LABEL_SOIL_MOISTURE = "soilMoisture";
 
+    private static final String LABEL_SHAREDPREFS = "sharedPreferences";
+
     private static final String IRRIGATION_FILE = "default_irrigation_data.json";
     private static final String FIELD_DATA_FILE = "default_field_data.json";
+    private static final String SHAREDPREFS_FILE = "org.senai.mecatronica.dripper.sharedprefs";
 
     //internal variables
     private Context context;
+    private SharedPreferences sharedPreferences;
 
     //Field Data
     private Integer currentTemperature;
@@ -59,6 +62,7 @@ public class DataManager {
     private Integer currentLuminosity;
     private String currentSoilMoisture;
     private String lastIrrigation;
+    private String macAddress;
 
     //Irrigation Data
     private Boolean autoMode = false;
@@ -69,6 +73,7 @@ public class DataManager {
         super();
         this.context = context;
         irrigationDataList = new ArrayList<>();
+        sharedPreferences = context.getSharedPreferences(SHAREDPREFS_FILE, Context.MODE_PRIVATE);
     }
 
     private static DataManager dataManager;
@@ -363,5 +368,19 @@ public class DataManager {
 
     public String getLastIrrigation(){
         return lastIrrigation;
+    }
+
+    public void clearDataFiles(){
+        //TODO erase all json files from memory
+    }
+
+    public void setMacAddress(String address){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LABEL_SHAREDPREFS, address);
+        editor.apply();
+    }
+
+    public String getMacAddress(){
+        return sharedPreferences.getString(LABEL_SHAREDPREFS, "00:00:00:00:00:00");
     }
 }

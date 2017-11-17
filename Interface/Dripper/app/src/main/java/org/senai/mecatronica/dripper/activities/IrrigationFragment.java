@@ -19,11 +19,6 @@ import org.senai.mecatronica.dripper.beans.IrrigationData;
 import org.senai.mecatronica.dripper.helpers.DateOperations;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import static android.app.Activity.RESULT_OK;
 
 /**

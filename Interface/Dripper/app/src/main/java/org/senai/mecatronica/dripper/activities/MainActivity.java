@@ -1,6 +1,6 @@
 package org.senai.mecatronica.dripper.activities;
 
-import android.provider.ContactsContract;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -8,15 +8,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.senai.mecatronica.dripper.R;
-import org.senai.mecatronica.dripper.beans.IrrigationData;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
 import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_ITEM = "arg_selected_item";
@@ -70,6 +71,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sync_btn:
+                Toast.makeText(this, "Sincronização selecionada", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.config_btn:
+                Toast.makeText(this, "Configuração selecionada", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                break;
+        }
+        return true;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, currentSelectedItem);
 //        getSupportFragmentManager().putFragment(outState, IRRIGATION_FRAGMENT, irrigationFragmentInstance);
@@ -98,11 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 frag = IrrigationFragment.newInstance();
                 break;
             case R.id.menu_sensor_data:
-
                 frag = SensorDataFragment.newInstance();
-                break;
-            case R.id.menu_settings:
-                frag = SettingsFragment.newInstance();
                 break;
         }
 
