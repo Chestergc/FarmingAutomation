@@ -2,13 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.senai.mecatronica.dripper">
 
+    <!--Permissions-->
+    <uses-feature android:name="android.hardware.bluetooth"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_drop_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
         <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
@@ -23,9 +29,11 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".activities.EditIrrigationActivity">
+        <activity android:name=".activities.EditIrrigationActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.SettingsActivity">
+        <activity android:name=".activities.SettingsActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

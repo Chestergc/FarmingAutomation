@@ -21,15 +21,12 @@ import java.util.regex.Pattern;
 
 public class SettingsActivity extends AppCompatActivity {
 
-
-
     TextView aboutItem;
     TextView macAddress;
     TextView clearDataItem;
     RelativeLayout userManualItem;
     RelativeLayout macAddressItem;
-    final private Context context = this;
-    SharedPreferences sharedPreferences;
+    private final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 // Create the AlertDialog
                 AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }

@@ -1,6 +1,13 @@
 package org.senai.mecatronica.dripper.activities;
 
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -15,18 +22,18 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.senai.mecatronica.dripper.R;
+import org.senai.mecatronica.dripper.managers.BluetoothManager;
 import org.senai.mecatronica.dripper.managers.DataManager;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String SELECTED_ITEM = "arg_selected_item";
-//    private static final String IRRIGATION_FRAGMENT = "irrigation_fragment";
-//    private static final String FIELD_DATA_FRAGMENT = "field_data_fragment";
 
     private BottomNavigationView mBottomNav;
     private int currentSelectedItem;
     private DataManager dataManager;
+    private BluetoothManager btManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e){
             System.out.println("Could not read JSON File");
         }
+
+        //initialize bluetooth manager
+        btManager = BluetoothManager.getInstance(this);
 
         //initialize bottom navigation menu
         mBottomNav = (BottomNavigationView) findViewById(R.id.navigation);
@@ -81,10 +91,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_btn:
-                Toast.makeText(this, "Sincronização selecionada", Toast.LENGTH_SHORT).show();
+                btManager.setMacAddress(dataManager.getMacAddress());
+                if(!btManager.isEnabled()){
+                    Toast.makeText(this, "Habilite o Bluetooth para sincronizar", Toast.LENGTH_SHORT).show();
+                }else if (!btManager.isPaired()){
+                    Toast.makeText(this, "Dispositivo não pareado", Toast.LENGTH_SHORT).show();
+                } else{
+                    new ConnectToBTServer().execute();
+                }
                 break;
             case R.id.config_btn:
-                Toast.makeText(this, "Configuração selecionada", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 break;
         }
@@ -94,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(SELECTED_ITEM, currentSelectedItem);
-//        getSupportFragmentManager().putFragment(outState, IRRIGATION_FRAGMENT, irrigationFragmentInstance);
-//        getSupportFragmentManager().putFragment(outState, FIELD_DATA_FRAGMENT, fieldDataFragmentInstance);
         super.onSaveInstanceState(outState);
     }
 
@@ -108,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        btManager.closeConnection();
     }
 
     private void selectFragment(MenuItem item){
@@ -127,11 +147,11 @@ public class MainActivity extends AppCompatActivity {
         // update selected item
         currentSelectedItem = itemID;
 
-        // uncheck the other items.
+        // update checked items
         for (int i = 0; i< mBottomNav.getMenu().size(); i++) {
-            MenuItem menuItem = mBottomNav.getMenu().getItem(i);
-            menuItem.setChecked(menuItem.getItemId() == item.getItemId());
+            mBottomNav.getMenu().getItem(i).setChecked(false);
         }
+        item.setChecked(true);
 
         //update action bar text
         updateToolbarText(item.getTitle());
@@ -148,6 +168,39 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(text);
+        }
+    }
+
+    //AsyncTask<Params, Progress, Result>
+    private class ConnectToBTServer extends AsyncTask<Void, Void, Boolean>{
+        ProgressDialog connectingDialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            //set message of the dialog
+            connectingDialog.setMessage("Conectando ao dispositivo");
+            //show dialog
+            connectingDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean success = btManager.startConnection();
+            return success;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if(connectingDialog != null && connectingDialog.isShowing()){
+                connectingDialog.dismiss();
+            }
+            if(success){
+//                btManager.sendIrrigationData(dataManager.getIrrigationDataUri());
+                Toast.makeText(MainActivity.this, "Conexão bem sucedida", Toast.LENGTH_LONG).show();
+            }
+            super.onPostExecute(success);
         }
     }
 

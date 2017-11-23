@@ -2,6 +2,7 @@ package org.senai.mecatronica.dripper.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.JsonWriter;
 
@@ -22,7 +23,7 @@ import java.util.List;
 
 /**
  * Reads from and writes to database (JSON local file)
- *
+ * Stores all data used by the aplication
  */
 
 public class DataManager {
@@ -62,7 +63,6 @@ public class DataManager {
     private Integer currentLuminosity;
     private String currentSoilMoisture;
     private String lastIrrigation;
-    private String macAddress;
 
     //Irrigation Data
     private Boolean autoMode = false;
@@ -109,6 +109,11 @@ public class DataManager {
         setIrrigationData(irrigationDataObject);
     }
 
+
+    /**
+     * Get data from database (JSON File) and calls method to update UI elements
+     * If file does not exist in database, creates a new default one
+     * */
     public void updateSensorData() throws IOException, JSONException{
         if(!fileExists(FIELD_DATA_FILE)){
             //create file with default settings
@@ -175,6 +180,9 @@ public class DataManager {
         }
     }
 
+    /**
+     * Read data from JSON Object and set to data manager's instance
+     * */
     private void setFieldData(JSONObject fieldDataObject) throws JSONException{
 
         //set default values
@@ -200,110 +208,130 @@ public class DataManager {
      * Write irrigation data from manager to database
      * */
     public void writeIrrigationFile(){
-        try{
-            //create a new writer with the file name given
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
-            writer.setIndent("  ");
-            writer.beginObject();
-            //write current autoMode
-            writer.name(LABEL_AUTO).value(autoMode);
 
-            //write number of triggers
-            writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    //create a new writer with the file name given
+                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(IRRIGATION_FILE, Context.MODE_PRIVATE), "UTF-8"));
+                    writer.setIndent("  ");
+                    writer.beginObject();
+                    //write current autoMode
+                    writer.name(LABEL_AUTO).value(autoMode);
 
-            writer.name(LABEL_TRIGGERS);
-            //write triggers list
-            writer.beginArray();
-            for(IrrigationData data : irrigationDataList){
-                //trigger object
-                writer.beginObject();
-                writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
-                writer.name(LABEL_START_TIME).value(data.getStartTime());
-                writer.name(LABEL_START_DATE).value(data.getStartDate());
-                int[] durationArray = data.getDuration();
-                //convert hours, mins, secs to secs
-                int finalDuration = (durationArray[0]*3600)+(durationArray[1]*60)+durationArray[2];
-                writer.name(LABEL_DURATION).value(finalDuration);
-                //weekdays array
-                writer.name(LABEL_WEEKDAYS);
-                writer.beginArray();
-                for(String weekDay : data.getWeekDays().keySet()){
-                    if(data.getWeekDays().get(weekDay)){
-                        writer.value(weekDay);
+                    //write number of triggers
+                    writer.name(LABEL_TRIGGERS_SIZE).value(irrigationDataList.size());
+
+                    writer.name(LABEL_TRIGGERS);
+                    //write triggers list
+                    writer.beginArray();
+                    for(IrrigationData data : irrigationDataList){
+                        //trigger object
+                        writer.beginObject();
+                        writer.name(LABEL_IRRIGATION_TYPE).value(data.getOneTime());
+                        writer.name(LABEL_START_TIME).value(data.getStartTime());
+                        writer.name(LABEL_START_DATE).value(data.getStartDate());
+                        int[] durationArray = data.getDuration();
+                        //convert hours, mins, secs to secs
+                        int finalDuration = (durationArray[0]*3600)+(durationArray[1]*60)+durationArray[2];
+                        writer.name(LABEL_DURATION).value(finalDuration);
+                        //weekdays array
+                        writer.name(LABEL_WEEKDAYS);
+                        writer.beginArray();
+                        for(String weekDay : data.getWeekDays().keySet()){
+                            if(data.getWeekDays().get(weekDay)){
+                                writer.value(weekDay);
+                            }
+                        }
+                        writer.endArray();
+                        writer.endObject();
                     }
+                    writer.endArray();
+                    writer.endObject();
+
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e){
+                    e.printStackTrace();
                 }
-                writer.endArray();
-                writer.endObject();
             }
-            writer.endArray();
-            writer.endObject();
+        }).start();
+    }
 
-            writer.flush();
-            writer.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+    /**
+     * Write default irrigation data to database
+     * */
+    private void writeDefaultIrrigationFile(final String jsonFileName){
+
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    //create a new writer with the file name given
+                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
+                    writer.setIndent("  ");
+                    writer.beginObject();
+                    //write current autoMode
+                    writer.name(LABEL_AUTO).value(false);
+
+                    //write number of triggers
+                    writer.name(LABEL_TRIGGERS_SIZE).value(0);
+
+                    //write triggers list
+                    writer.name(LABEL_TRIGGERS);
+                    writer.beginArray();
+                    writer.endArray();
+                    writer.endObject();
+
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
-    private void writeDefaultIrrigationFile(String jsonFileName){
-        try{
-            //create a new writer with the file name given
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
-            writer.setIndent("  ");
-            writer.beginObject();
-            //write current autoMode
-            writer.name(LABEL_AUTO).value(false);
-
-            //write number of triggers
-            writer.name(LABEL_TRIGGERS_SIZE).value(0);
-
-            //write triggers list
-            writer.name(LABEL_TRIGGERS);
-            writer.beginArray();
-            writer.endArray();
-            writer.endObject();
-
-            writer.flush();
-            writer.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    private void writeDefaultFieldDataFile(String jsonFileName){
+    /**
+     * Write default field data to database
+     * */
+    private void writeDefaultFieldDataFile(final String jsonFileName){
 //        {
 //        "lastIrrigationTime":"-",
 //        "logFrequency":0,
 //        "numberOfLogs":0,
 //        "logs": []
 //    }
-        try{
-            //create a new writer with the file name given
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
-            writer.setIndent("  ");
-            writer.beginObject();
-            //write last irrigation time
-            writer.name(LABEL_LAST_IRRIGATION).value("-");
 
-            //write log frequency
-            writer.name(LABEL_LOG_FREQUENCY).value(0);
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    //create a new writer with the file name given
+                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(jsonFileName, Context.MODE_PRIVATE), "UTF-8"));
+                    writer.setIndent("  ");
+                    writer.beginObject();
+                    //write last irrigation time
+                    writer.name(LABEL_LAST_IRRIGATION).value("-");
 
-            //write log list size
-            writer.name(LABEL_NUM_LOGS).value(0);
+                    //write log frequency
+                    writer.name(LABEL_LOG_FREQUENCY).value(0);
 
-            //write logs list
-            writer.name(LABEL_LOGS);
-            writer.beginArray();
-            writer.endArray();
-            writer.endObject();
+                    //write log list size
+                    writer.name(LABEL_NUM_LOGS).value(0);
 
-            writer.flush();
-            writer.close();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+                    //write logs list
+                    writer.name(LABEL_LOGS);
+                    writer.beginArray();
+                    writer.endArray();
+                    writer.endObject();
+
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
     }
 
@@ -383,4 +411,9 @@ public class DataManager {
     public String getMacAddress(){
         return sharedPreferences.getString(LABEL_SHAREDPREFS, "00:00:00:00:00:00");
     }
+
+    public Uri getIrrigationDataUri(){
+        return Uri.fromFile(context.getFileStreamPath(IRRIGATION_FILE));
+    }
+
 }
