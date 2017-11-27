@@ -32,13 +32,25 @@ class bluetooth (threading.Thread):
        self.counter = counter
     def run(self):
        print ("Starting " + self.name)
-       startupbtl()
-       comms()
+       startupbtl(self.name)
+       comms(self.name)
+       print ("Exiting " + self.name)
+
+class server (threading.Thread):
+    def __init__(self, threadID, name, counter):
+       threading.Thread.__init__(self)
+       self.threadID = threadID
+       self.name = name
+       self.counter = counter
+    def run(self):
+       print ("Starting " + self.name)
+       server(self.name)
        print ("Exiting " + self.name)
 
 ##FUNCTIONS
 
-def startupbtl():
+def startupbtl(threadName):
+    print("Starting", threadName)
     subprocess.call(['sudo', 'bluetoothctl'])
     subprocess.call(['power', 'on'])
     subprocess.call(['discoverable', 'on'])
@@ -46,7 +58,8 @@ def startupbtl():
     subprocess.call(['scan', 'on'])
     subprocess.call(['pair <', mac, '>'])
 
-def comms():
+def comms(threadName):
+    print("Starting", threadName)
     server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     port=1
     server_socket.bind(("",port))
@@ -83,44 +96,56 @@ def shutdown():
     check_call(['sudo', 'poweroff'])
 
 ##JSON Server
-def server():
-    outputDict = {
-    'logFrequency':60,
-    'numberOfLogs':1,
-    'logs':[{
-        'date':'12/11/2017',
-        'time':'06:11:00',
-        'numberOfSensors':4,
-        'sensors':
-            [{"name":"Temperature",
-            "data":'22.3',
-            "unit":"°C"},
-            {"name":"Moisture",
-            "data":35,
-            "unit":"%"},
-            {"name":"Luminosity",
-            "data":11000,
-            "unit":"Lux"},
-            {"name":"Soil Moisture",
-            "data":"Low",
-            "unit":""}]
-            }]
-    }
+def server(threadName,**outputDict):
+    print("Starting", threadName)
     ##JSON OUTPUT
-    ##file.open(server.json)
-    ##file.append(json.dumps(outputDict))
-    ##file.close(server.json)
+    file.open(server.json)
+    file.append(json.dumps(outputDict))
+    file.close(server.json)
+
+def fix(x):
+    return
+
+
 
 ##FEEDBACK LOOP
 if __name__='__main__':
-    bltThread = bluetooth(1, "Comms-1", 1)
-    bltThread.start()
+    while True:
+        #ThreadSetup
+        bltThread = bluetooth(1, "Comms-1", 1)
+        srvThread = server(2, "Server-1", 2)
+        bltThread.start()
 
-    outputWater(checkWater(pin), time.time, pin)
-    data=client_socket.recv(1024)
-    fix(data)
-    server()
-    endOfCycle(10)
-    ##End BluetoothSocket
-    ##client_socket.close()
-    ##server_socket.close()
+        ##OutputFix
+        outputDict = {
+        'logFrequency':60,
+        'numberOfLogs':1,
+        'logs':[{
+            'date':'12/11/2017',
+            'time':'06:11:00',
+            'numberOfSensors':4,
+            'sensors':
+                [{"name":"Temperature",
+                "data":'22.3',
+                "unit":"°C"},
+                {"name":"Moisture",
+                "data":35,
+                "unit":"%"},
+                {"name":"Luminosity",
+                "data":11000,
+                "unit":"Lux"},
+                {"name":"Soil Moisture",
+                "data":"Low",
+                "unit":""}]
+                }]
+        }
+
+        #Processing and Output
+        srvThread.start()
+        outputWater(checkWater(pin), time.time, pin)
+        data=client_socket.recv(1024)
+        fix(data)
+        endOfCycle(10)
+        ##End BluetoothSocket
+        ##client_socket.close()
+        ##server_socket.close()
