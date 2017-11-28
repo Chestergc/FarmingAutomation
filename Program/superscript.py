@@ -2,25 +2,21 @@
 ###https://gpiozero.readthedocs.io/en/stable/api_input.html
 
 ##IMPORTS GO HERE
-import RPi.GPIO as GPIO #GPIO antiga, setup do sistema
 import gpiozero         #GPIO nova, sensores
 import Bluetooth        #Bluetooth
 import subprocess       #processamento paralelo, shell
 import json             #output em json para servidor
 import time             #sleep, time.time
-import threading
+import threading        #MultiThreading
 
 ##SETUP
-GPIO.setmode(GPIO.BCM)  #Setup de nome de pinos
-GPIO.setwarnings(False) #desabilita verbosidade de argumentos
-GPIO.setup(pin,GPIO.OUT)#Setup pino como saida
-GPIO.output(pin,0)      #Reseta pino de saida
 waterSensor = gpiozero.InputDevice(pin, pull_up=False)
 waterValve = gpiozero.OutputDevice(pin, active_high=True, initial_value=False)
 shutdown_btn = Button(17, hold_time=2)#Desliga
 shutdown_btn.when_held = shutdown
 mac="macAdress"         #Endereço bluetooth android
 #file.new(server.json)  #Cria documento de servidor
+ctrLogs=1
 
 #CLASSES
 
@@ -103,7 +99,9 @@ def server(threadName,**outputDict):
     file.append(json.dumps(outputDict))
     file.close(server.json)
 
-def fix(x):
+def fix(str(x)):
+    fix=x.split()
+
     return
 
 
@@ -117,12 +115,39 @@ if __name__='__main__':
         bltThread.start()
 
         ##OutputFix
+        data=client_socket.recv(1024)
+        data=fix(data)
+        timebuf=str(time.strftime('%X %x'))
+        actual=timebuf.split()
+        day=str(actual[0])
+        hour=str(actual[1])
+        srvFile=json.load(open(server.json))
+        lognumb=len(srvFile['logs'])
+
         outputDict = {
         'logFrequency':60,
-        'numberOfLogs':1,
+        'numberOfLogs':lognumb,
         'logs':[{
-            'date':'12/11/2017',
-            'time':'06:11:00',
+            'date':day,
+            'time':hour,
+            'numberOfSensors':4,
+            'sensors':
+                [{"name":"Temperature",
+                "data":'22.3',
+                "unit":"°C"},
+                {"name":"Moisture",
+                "data":35,
+                "unit":"%"},
+                {"name":"Luminosity",
+                "data":11000,
+                "unit":"Lux"},
+                {"name":"Soil Moisture",
+                "data":"Low",
+                "unit":""}]
+                },
+                {
+            'date':day,
+            'time':hour,
             'numberOfSensors':4,
             'sensors':
                 [{"name":"Temperature",
@@ -143,9 +168,8 @@ if __name__='__main__':
         #Processing and Output
         srvThread.start()
         outputWater(checkWater(pin), time.time, pin)
-        data=client_socket.recv(1024)
-        fix(data)
-        endOfCycle(10)
+        endOfCycle(srvFile['logFrequency'])
+        ctrLogs+=1
         ##End BluetoothSocket
         ##client_socket.close()
         ##server_socket.close()
