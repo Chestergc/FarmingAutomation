@@ -63,6 +63,7 @@ public class DataManager {
     private Integer currentLuminosity;
     private String currentSoilMoisture;
     private String lastIrrigation;
+    private String rawSensorData;
 
     //Irrigation Data
     private Boolean autoMode = false;
@@ -73,6 +74,7 @@ public class DataManager {
         super();
         this.context = context;
         irrigationDataList = new ArrayList<>();
+        rawSensorData = "";
         sharedPreferences = context.getSharedPreferences(SHAREDPREFS_FILE, Context.MODE_PRIVATE);
     }
 
@@ -414,6 +416,10 @@ public class DataManager {
 
     public Uri getIrrigationDataUri(){
         return Uri.fromFile(context.getFileStreamPath(IRRIGATION_FILE));
+    }
+
+    public void appendSensorData(String data){
+        rawSensorData += data;
     }
 
 }

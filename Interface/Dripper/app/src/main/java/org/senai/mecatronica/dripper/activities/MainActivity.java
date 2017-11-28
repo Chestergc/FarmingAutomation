@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        btManager.closeConnection();
+        btManager.closeConnection();
     }
 
     private void selectFragment(MenuItem item){
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //AsyncTask<Params, Progress, Result>
-    private class ConnectToBTServer extends AsyncTask<Void, Void, Boolean>{
+    private class ConnectToBTServer extends AsyncTask<Void, Void, Void>{
         ProgressDialog connectingDialog = new ProgressDialog(MainActivity.this);
 
         @Override
@@ -185,22 +185,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            boolean success = btManager.startConnection();
-            return success;
+        protected Void doInBackground(Void... params) {
+            btManager.startConnection();
+            return null;
         }
 
 
         @Override
-        protected void onPostExecute(Boolean success) {
+        protected void onPostExecute(Void aVoid) {
             if(connectingDialog != null && connectingDialog.isShowing()){
                 connectingDialog.dismiss();
             }
-            if(success){
-//                btManager.sendIrrigationData(dataManager.getIrrigationDataUri());
-                Toast.makeText(MainActivity.this, "Conexão bem sucedida", Toast.LENGTH_LONG).show();
-            }
-            super.onPostExecute(success);
+//            if(success){
+////                btManager.sendIrrigationData(dataManager.getIrrigationDataUri());
+//                Toast.makeText(MainActivity.this, "Conexão bem sucedida", Toast.LENGTH_LONG).show();
+//            }
+            super.onPostExecute(aVoid);
         }
     }
 
