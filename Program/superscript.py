@@ -16,8 +16,7 @@ import Adafruit_DHT
 waterSensor = gpiozero.Button(pin=18, pull_up=false)
 ldr=gpiozero.LightSensor(pin=15)
 sensor=Adafruit_DHT.DHT11
-pin=14
-humidity, temperature=Adafruit_DHT.read_retry(sensor, pin)
+humidity, temperature=Adafruit_DHT.read_retry(sensor, 14)
 
 ###OUTPUT
 waterValve = gpiozero.OutputDevice(pin=23, active_high=True, initial_value=False)
