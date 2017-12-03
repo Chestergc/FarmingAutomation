@@ -164,6 +164,7 @@ def main():
         actual=timebuf.split()
         day=str(actual[0])
         hour=str(actual[1])
+        humidity, temperature=Adafruit_DHT.read_retry(sensor, 14)
 
         if(checkLight(ldr)==True):
             day="day"
