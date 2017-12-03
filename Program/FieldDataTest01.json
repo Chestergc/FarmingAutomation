@@ -1,0 +1,35 @@
+{
+	"logFrequency":60,
+	"numberOfLogs":1,
+	"logs":
+	[
+		{
+			"date":"12/11/2017",
+			"time":"06:11:00",
+			"numberOfSensors":4,
+			"sensors":
+			[
+				{
+					"name":"Temperature",
+					"data":22.3,
+					"unit":"°C"
+				},
+				{
+					"name":"Moisture",
+					"data":35,
+					"unit":"%"
+				},
+				{
+					"name":"Luminosity",
+					"data":11000,
+					"unit":"Lux"
+				},
+				{
+					"name":"Soil Moisture",
+					"data":"Low",
+					"unit":""
+				}
+			]
+		},{}
+	]
+}

@@ -2,84 +2,204 @@
 ###https://gpiozero.readthedocs.io/en/stable/api_input.html
 
 ##IMPORTS GO HERE
-import gpiozero
-from time import sleep
+import os               #Gerenciamento de arquivos
+import gpiozero         #GPIO nova, sensores
+import Bluetooth        #Bluetooth
+import subprocess       #processamento paralelo, shell
+import json             #output em json para servidor
+import time             #time.sleep, time.time
+import threading        #MultiThreading
+import Adafruit_DHT
 
 ##SETUP
-waterSensor = gpiozero.InputDevice(pin, pull_up=False)
-waterValve = gpiozero.OutputDevice(pin, active_high=True, initial_value=False)
+###Input
+waterSensor = gpiozero.Button(pin=18, pull_up=false)
+ldr=gpiozero.LightSensor(pin=15)
+sensor=Adafruit_DHT.DHT11
+humidity, temperature=Adafruit_DHT.read_retry(sensor, 14)
+
+###OUTPUT
+waterValve = gpiozero.OutputDevice(pin=23, active_high=True, initial_value=False)
+red=gpiozero.LED(1)
+green=gpiozero.LED(3)
+blue=gpiozero.LED(5)
+
+###Variables
+mac="macAdress"         #Endereço bluetooth android
+day, soil, ctrLogs, freq, senscount = "day", "low", 1, 60, 4
+
+
+#CLASSES
+
+class bluetooth (threading.Thread):
+    def __init__(self, threadID, name, counter):
+       threading.Thread.__init__(self)
+       self.threadID = threadID
+       self.name = name
+       self.counter = counter
+    def run(self):
+       print ("Starting " + self.name)
+       startupbtl(self.name)
+       comms(self.name)
+       print ("Exiting " + self.name)
 
 ##FUNCTIONS
 
-def checkWater(x,thresh):
-    needsWater = x
-    if needsWater>=thresh:
+def startupbtl(threadName):
+    print("Starting", threadName)
+    subprocess.call(['sudo', 'bluetoothctl'])
+    subprocess.call(['power', 'on'])
+    subprocess.call(['discoverable', 'on'])
+    subprocess.call(['pairable', 'on'])
+    subprocess.call(['scan', 'on'])
+    subprocess.call(['pair', mac])
+
+def comms(threadName):
+    print("Starting", threadName)
+    server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    port=1
+    server_socket.bind(("",port))
+    server_socket.listen(1)
+    client_socket, address = server_socket.accept()
+    print("Conexão Estabelecida em", address)
+
+def checkWater(wtrsens):
+    wtrsens = x
+    if x.wait_for_press()==True:
         return True
-        sleep(1)
     else:
         return False
 
-def outputWater(x,y,z):
-    Toggle = x
+def outputWater(checkwtr):
+    Toggle = checkwtr
     if x==True:
         ##Toggle Output;
         waterValve.on()
-        sleep(1)
+        blue.on()
+        time.sleep(1)
         waterValve.off()
-        ##ServerData;
-        return "The water valve was turned on %S"#(%s = y)
-        sleep(1)
+        blue.off()
+        return True#(%s = y)
     else:
-        return "The water valve is off"
+        return False
 
-def recordJSON(x):
-    x=str(x)
-    if str(x)==[::-1]:
-        return "Already on file"
+def checkLight(chklight):
+    if chklight.waitforlight()==True:
+        return True
     else:
-        file.open()
-        file.append(x)
-        file.close()
-        return "Recorded"
-
-def scrUpdateBuffer():
-    file.open()##SERVER FILE
-    sendToBuffer = file.read()##Last Input
-    file.close()##SERVER FILE
-    file.open()##SCREEN BUFFER FILE
-    file.write(sendToBuffer)## CLEAN THE FILE BEFORE WRITING TO IT
-    file.close()##SCREEN BUFFER
-
-def scrRun():
-    ##Run GUI SCRIPT
-    file.open()
-    uiStuff = file.read()##STUFF FROM THE BUFFER FILE
-    exec(open("./GUI.py").read(), uiStuff)
-    file.close()
-    exec(close("./GUI.py"))
+        return False
 
 def endOfCycle(x):
-    sleep(x)
-    return 0
+    red.on()
+    time.sleep(x)
+    red.off()
+    return
 
-def shutdown():
-    check_call(['sudo', 'poweroff'])
+##JSON Server
+def convert_bytes(num):
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0
 
-###CODE FOR SHUTDOWN BUTTON:
-##shutdown_btn = Button(17, hold_time=2)
-##shutdown_btn.when_held = shutdown
+
+def file_size(file_path):
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return convert_bytes(file_info.st_size)
 
 
-##SERVER SCRIPT
+def server(mac, **outputDict):
+    print("Updating Server")
+    ##JSON OUTPUT
+    srvFile = os.open("server.json", os.O_APPEND|os.O_CREAT)
+    os.write(srvFile, json.dumps(outputDict))
+    os.close(srvFile)
 
-##JSON OUTPUT
+    #bluetooth
+    bd_addr=mac
+    port=1
 
-##ACTUATING
+    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+    sock.connect((bd_addr, port))
+
+    sock.send(outputDict['logs']['date'])
+    sock.send(outputDict['logs']['time'])
+    sock.send(outputDict['logs']['numberOfSensors'])
+    sock.send(outputDict['logs']['temperature'])
+    sock.send(outputDict['logs']['moisture'])
+    sock.send(outputDict['logs']['luminosity'])
+    sock.send(outputDict['logs']['soil'])
+    sock.close()
+
+    #ServerFixSize
+    if(int(file_size(server.json).split()[0])>=10 and file_size(server.json).split()[1]=="MB"):
+        subprocess.call(['cp server.json'+'bkp'])
+        return
+    else:
+        return
+
+
+##FIX BLUETOOTH DATA INPUT:
+#def fix(str(x)):
+#    fix=x.split()
+#
+#    return
+
 
 ##FEEDBACK LOOP
-if __name__='__main__'
-    scrRun()
-    outputWater(checkWater(pin), time.time, pin)
-    recordJSON(checkWater(pin))
-    endOfCycle(10)
-    ##THIS
+def main():
+    while True:
+        #WorkingLED==ON
+        green.on()
+
+        #ThreadSetup
+        bltThread = bluetooth(1, "Comms-1", 1)
+        bltThread.start()
+
+        ##OutputFix
+        data=client_socket.recv(1024)
+        data=fix(data)
+        timebuf=str(time.strftime('%X %x'))
+        actual=timebuf.split()
+        day=str(actual[0])
+        hour=str(actual[1])
+
+        if(checkLight(ldr)==True):
+            day="day"
+        else:
+            day="night"
+
+        if(checkWater(WaterSensor)==True):
+            soil="High"
+        else:
+            soil="Low"
+
+        outputDict = {
+        'logFrequency':freq,
+        'numberOfLogs':ctrLogs,
+        'logs':[{
+            'date':day,
+            'time':hour,
+            'numberOfSensors':senscount,
+            'temperature':temperature,
+            'moisture':humidity,
+            'luminosity':day,
+            'soil':soil
+            }]
+        }
+
+        #Processing and Output
+        outputWater(checkWater(WaterSensor))
+        server(mac)
+        ctrLogs+=1
+        green.off()
+        endOfCycle(outputDict['logFrequency'])
+
+        ##End BluetoothSocket
+        ##client_socket.close()
+        ##server_socket.close()
+
+
+if __name__=='__main__':
+    main()
