@@ -9,14 +9,15 @@ import subprocess       #processamento paralelo, shell
 import json             #output em json para servidor
 import time             #time.sleep, time.time
 import threading        #MultiThreading
-#IMPORT DHT11.PY LIBRARY
+import Adafruit_DHT
 
 ##SETUP
 ###Input
 waterSensor = gpiozero.Button(pin=18, pull_up=false)
 ldr=gpiozero.LightSensor(pin=15)
-temper=dht11.input(pin=14)
-##DHT11 (temp+humidity) == pin 14
+sensor=Adafruit_DHT.DHT11
+pin=14
+humidity, temperature=Adafruit_DHT.read_retry(sensor, pin)
 
 ###OUTPUT
 waterValve = gpiozero.OutputDevice(pin=23, active_high=True, initial_value=False)
@@ -182,8 +183,8 @@ def main():
             'date':day,
             'time':hour,
             'numberOfSensors':senscount,
-            'temperature':temper.temperature(),
-            'moisture':temper.humidity(),
+            'temperature':temperature,
+            'moisture':humidity,
             'luminosity':day,
             'soil':soil
             }]
