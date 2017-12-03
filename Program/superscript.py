@@ -2,21 +2,32 @@
 ###https://gpiozero.readthedocs.io/en/stable/api_input.html
 
 ##IMPORTS GO HERE
+import os               #Gerenciamento de arquivos
 import gpiozero         #GPIO nova, sensores
 import Bluetooth        #Bluetooth
 import subprocess       #processamento paralelo, shell
 import json             #output em json para servidor
-import time             #sleep, time.time
+import time             #time.sleep, time.time
 import threading        #MultiThreading
+#IMPORT DHT11.PY LIBRARY
 
 ##SETUP
-waterSensor = gpiozero.InputDevice(pin, pull_up=False)
-waterValve = gpiozero.OutputDevice(pin, active_high=True, initial_value=False)
-shutdown_btn = Button(17, hold_time=2)#Desliga
-shutdown_btn.when_held = shutdown
+###Input
+waterSensor = gpiozero.Button(pin=18, pull_up=false)
+ldr=gpiozero.LightSensor(pin=15)
+temper=dht11.input(pin=14)
+##DHT11 (temp+humidity) == pin 14
+
+###OUTPUT
+waterValve = gpiozero.OutputDevice(pin=23, active_high=True, initial_value=False)
+red=gpiozero.LED(1)
+green=gpiozero.LED(3)
+blue=gpiozero.LED(5)
+
+###Variables
 mac="macAdress"         #Endereço bluetooth android
-#file.new(server.json)  #Cria documento de servidor
-ctrLogs=1
+day, soil, ctrLogs, freq, senscount = "day", "low", 1, 60, 4
+
 
 #CLASSES
 
@@ -32,17 +43,6 @@ class bluetooth (threading.Thread):
        comms(self.name)
        print ("Exiting " + self.name)
 
-class server (threading.Thread):
-    def __init__(self, threadID, name, counter):
-       threading.Thread.__init__(self)
-       self.threadID = threadID
-       self.name = name
-       self.counter = counter
-    def run(self):
-       print ("Starting " + self.name)
-       server(self.name)
-       print ("Exiting " + self.name)
-
 ##FUNCTIONS
 
 def startupbtl(threadName):
@@ -52,7 +52,7 @@ def startupbtl(threadName):
     subprocess.call(['discoverable', 'on'])
     subprocess.call(['pairable', 'on'])
     subprocess.call(['scan', 'on'])
-    subprocess.call(['pair <', mac, '>'])
+    subprocess.call(['pair', mac])
 
 def comms(threadName):
     print("Starting", threadName)
@@ -63,55 +63,98 @@ def comms(threadName):
     client_socket, address = server_socket.accept()
     print("Conexão Estabelecida em", address)
 
-def checkWater(x,thresh):
-    needsWater = x
-    if needsWater>=thresh:
+def checkWater(wtrsens):
+    wtrsens = x
+    if x.wait_for_press()==True:
         return True
-        sleep(1)
     else:
         return False
 
-def outputWater(x,y,z):
-    Toggle = x
+def outputWater(checkwtr):
+    Toggle = checkwtr
     if x==True:
         ##Toggle Output;
         waterValve.on()
-        sleep(1)
+        blue.on()
+        time.sleep(1)
         waterValve.off()
-        ##ServerData;
-        return "The water valve was turned on %S"#(%s = y)
-        sleep(1)
+        blue.off()
+        return True#(%s = y)
     else:
-        return "The water valve is off"
+        return False
+
+def checkLight(chklight):
+    if chklight.waitforlight()==True:
+        return True
+    else:
+        return False
 
 def endOfCycle(x):
-    sleep(x)
-    return 0
-
-def shutdown():
-    check_call(['sudo', 'poweroff'])
-
-##JSON Server
-def server(threadName,**outputDict):
-    print("Starting", threadName)
-    ##JSON OUTPUT
-    file.open(server.json)
-    file.append(json.dumps(outputDict))
-    file.close(server.json)
-
-def fix(str(x)):
-    fix=x.split()
-
+    red.on()
+    time.sleep(x)
+    red.off()
     return
 
+##JSON Server
+def convert_bytes(num):
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0
+
+
+def file_size(file_path):
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return convert_bytes(file_info.st_size)
+
+
+def server(mac, **outputDict):
+    print("Updating Server")
+    ##JSON OUTPUT
+    srvFile = os.open("server.json", os.O_APPEND|os.O_CREAT)
+    os.write(srvFile, json.dumps(outputDict))
+    os.close(srvFile)
+
+    #bluetooth
+    bd_addr=mac
+    port=1
+
+    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+    sock.connect((bd_addr, port))
+
+    sock.send(outputDict['logs']['date'])
+    sock.send(outputDict['logs']['time'])
+    sock.send(outputDict['logs']['numberOfSensors'])
+    sock.send(outputDict['logs']['temperature'])
+    sock.send(outputDict['logs']['moisture'])
+    sock.send(outputDict['logs']['luminosity'])
+    sock.send(outputDict['logs']['soil'])
+    sock.close()
+
+    #ServerFixSize
+    if(int(file_size(server.json).split()[0])>=10 and file_size(server.json).split()[1]=="MB"):
+        subprocess.call(['cp server.json'+'bkp'])
+        return
+    else:
+        return
+
+
+##FIX BLUETOOTH DATA INPUT:
+#def fix(str(x)):
+#    fix=x.split()
+#
+#    return
 
 
 ##FEEDBACK LOOP
-if __name__='__main__':
+def main():
     while True:
+        #WorkingLED==ON
+        green.on()
+
         #ThreadSetup
         bltThread = bluetooth(1, "Comms-1", 1)
-        srvThread = server(2, "Server-1", 2)
         bltThread.start()
 
         ##OutputFix
@@ -121,55 +164,42 @@ if __name__='__main__':
         actual=timebuf.split()
         day=str(actual[0])
         hour=str(actual[1])
-        srvFile=json.load(open(server.json))
-        lognumb=len(srvFile['logs'])
+
+        if(checkLight(ldr)==True):
+            day="day"
+        else:
+            day="night"
+
+        if(checkWater(WaterSensor)==True):
+            soil="High"
+        else:
+            soil="Low"
 
         outputDict = {
-        'logFrequency':60,
-        'numberOfLogs':lognumb,
+        'logFrequency':freq,
+        'numberOfLogs':ctrLogs,
         'logs':[{
             'date':day,
             'time':hour,
-            'numberOfSensors':4,
-            'sensors':
-                [{"name":"Temperature",
-                "data":'22.3',
-                "unit":"°C"},
-                {"name":"Moisture",
-                "data":35,
-                "unit":"%"},
-                {"name":"Luminosity",
-                "data":11000,
-                "unit":"Lux"},
-                {"name":"Soil Moisture",
-                "data":"Low",
-                "unit":""}]
-                },
-                {
-            'date':day,
-            'time':hour,
-            'numberOfSensors':4,
-            'sensors':
-                [{"name":"Temperature",
-                "data":'22.3',
-                "unit":"°C"},
-                {"name":"Moisture",
-                "data":35,
-                "unit":"%"},
-                {"name":"Luminosity",
-                "data":11000,
-                "unit":"Lux"},
-                {"name":"Soil Moisture",
-                "data":"Low",
-                "unit":""}]
-                }]
+            'numberOfSensors':senscount,
+            'temperature':temper.temperature(),
+            'moisture':temper.humidity(),
+            'luminosity':day,
+            'soil':soil
+            }]
         }
 
         #Processing and Output
-        srvThread.start()
-        outputWater(checkWater(pin), time.time, pin)
-        endOfCycle(srvFile['logFrequency'])
+        outputWater(checkWater(WaterSensor))
+        server(mac)
         ctrLogs+=1
+        green.off()
+        endOfCycle(outputDict['logFrequency'])
+
         ##End BluetoothSocket
         ##client_socket.close()
         ##server_socket.close()
+
+
+if __name__=='__main__':
+    main()
