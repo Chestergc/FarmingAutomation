@@ -1,5 +1,6 @@
 package org.senai.mecatronica.dripper.managers;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -9,11 +10,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.senai.mecatronica.dripper.helpers.DateOperations;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,12 +39,17 @@ public class BluetoothManager {
     private Handler mHandler;
     private DataManager dataManager;
 
+    private boolean msgOver;
+
     private BluetoothManager(Context context) {
         super();
         this.context = context;
         this.btAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.pairedDevices = btAdapter.getBondedDevices();
+        if(btAdapter != null){
+            this.pairedDevices = btAdapter.getBondedDevices();
+        }
         this.dataManager = DataManager.getInstance(context);
+        this.msgOver = true;
         this.mHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -50,7 +58,12 @@ public class BluetoothManager {
 //                int end = (int)msg.arg2;
                 if(msg.what == MESSAGE_READ) {
                     String writeMessage = new String(writeBuf);
-                    dataManager.appendSensorData(writeMessage);
+                    //check if it is the last chunk of data
+                    if(writeMessage.contains("#")){
+                        writeMessage=writeMessage.substring(0,writeMessage.indexOf('#'));
+                        msgOver=true;
+                    }
+                    dataManager.appendSensorData(writeMessage, msgOver);
 //                    writeMessage = writeMessage.substring(begin, end);
                     Log.i(TAG, writeMessage);
                 }
@@ -167,24 +180,27 @@ public class BluetoothManager {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
         private static final String TAG = "Connect Thread";
-        private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+        private final UUID MY_UUID = UUID.fromString("00001105-0000-1000-8000-00805f9b34fb");
+        private ProgressDialog connectingDialog = new ProgressDialog(context);
 
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             mmDevice = device;
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
+
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 //                tmp = device.createRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
                 //reflection (getclass.getmethod)
 //                Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
 //                tmp = (BluetoothSocket) m.invoke(device, 1);
-
+                showConnectingDialog();
                 Log.i(TAG, "RFCOMM Socket created");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
             }
             mmSocket = tmp;
+            dismissConnectingDialog();
         }
 
         public void run() {
@@ -217,6 +233,17 @@ public class BluetoothManager {
             } catch (IOException e) { }
         }
 
+        private void showConnectingDialog(){
+            //set message of the dialog
+            connectingDialog.setMessage("Conectando ao dispositivo");
+            //show dialog
+            connectingDialog.show();
+        }
+
+        private void dismissConnectingDialog(){
+            connectingDialog.dismiss();
+        }
+
     }
 
     private class ConnectedThread extends Thread {
@@ -246,8 +273,12 @@ public class BluetoothManager {
             byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
 
-            // Keep listening to the InputStream until an exception occurs
-            while (true) {
+            Uri irrigationDataUri = dataManager.getIrrigationDataUri(); //data to send
+            sendIrrigationData(irrigationDataUri);
+
+            // Keep listening to the InputStream until message is over or exception occurs
+            msgOver = false;
+            while (!msgOver) {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
@@ -256,19 +287,31 @@ public class BluetoothManager {
                     // Send the obtained bytes to the UI activity
                     mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
+                    dataManager.setLastSync(DateOperations.getCurrentTime() +
+                            " " + DateOperations.getCurrentDate());
                 } catch (IOException e) {
+                    msgOver = true;
                     Log.e(TAG, "Unable to read from InputStream");
                     break;
                 }
             }
-            Uri irrigationDataUri = dataManager.getIrrigationDataUri();
-            sendIrrigationData(irrigationDataUri);
+
+
+            try{
+                dataManager.updateSensorData();
+            } catch (JSONException e){
+                System.out.println("Error creating JSON Object");
+            } catch (IOException e){
+                System.out.println("Could not read JSON File");
+            }
         }
 
         /* Call this from the main activity to send data to the remote device */
         public void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
+//                Log.i(TAG, "Sending bytes: " + new String(bytes));
+                Log.i(TAG, "Send bytes successful");
             } catch (IOException e) {
                 Log.e(TAG, "Error writing message");
             }

@@ -64,6 +64,7 @@ public class DataManager {
     private String currentSoilMoisture;
     private String lastIrrigation;
     private String rawSensorData;
+    private String lastSync;
 
     //Irrigation Data
     private Boolean autoMode = false;
@@ -73,8 +74,9 @@ public class DataManager {
     private DataManager(Context context) {
         super();
         this.context = context;
-        irrigationDataList = new ArrayList<>();
-        rawSensorData = "";
+        this.irrigationDataList = new ArrayList<>();
+        this.rawSensorData = "";
+        this.lastSync = "-";
         sharedPreferences = context.getSharedPreferences(SHAREDPREFS_FILE, Context.MODE_PRIVATE);
     }
 
@@ -202,8 +204,6 @@ public class DataManager {
             currentLuminosity = lastLog.getInt(LABEL_LUMINOSITY);
             currentSoilMoisture = lastLog.getString(LABEL_SOIL_MOISTURE);
         }
-
-        //TODO get data from last irrigation
     }
 
     /**
@@ -258,6 +258,54 @@ public class DataManager {
                 }
             }
         }).start();
+    }
+
+    private void writeFieldDataFile(final String lastIrrigation, final int numLogs, final int temperature, final int moisture, final int luminosity, final String soilMoisture){
+//        {
+//        "lastIrrigationTime":"-",
+//        "logFrequency":0,
+//        "numberOfLogs":0,
+//        "logs": []
+//    }
+
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    //create a new writer with the file name given
+                    JsonWriter writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(FIELD_DATA_FILE, Context.MODE_PRIVATE), "UTF-8"));
+                    writer.setIndent("  ");
+                    writer.beginObject();
+                    //write last irrigation time
+                    writer.name(LABEL_LAST_IRRIGATION).value(lastIrrigation);
+
+                    //write log frequency
+                    writer.name(LABEL_LOG_FREQUENCY).value(60);
+
+                    //write log list size
+                    writer.name(LABEL_NUM_LOGS).value(numLogs);
+
+                    //write logs list
+                    writer.name(LABEL_LOGS);
+                    writer.beginArray();
+                    for(int i = 0; i < numLogs; i++){
+                        writer.beginObject();
+                        writer.name(LABEL_TEMPERATURE).value(temperature);
+                        writer.name(LABEL_MOISTURE).value(moisture);
+                        writer.name(LABEL_LUMINOSITY).value(luminosity);
+                        writer.name(LABEL_SOIL_MOISTURE).value(soilMoisture);
+                        writer.endObject();
+                    }
+                    writer.endArray();
+                    writer.endObject();
+
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     /**
@@ -337,6 +385,8 @@ public class DataManager {
 
     }
 
+
+
     public List<IrrigationData> getIrrigationDataList(){
         return this.irrigationDataList;
     }
@@ -402,6 +452,7 @@ public class DataManager {
 
     public void clearDataFiles(){
         //TODO erase all json files from memory
+
     }
 
     public void setMacAddress(String address){
@@ -418,8 +469,25 @@ public class DataManager {
         return Uri.fromFile(context.getFileStreamPath(IRRIGATION_FILE));
     }
 
-    public void appendSensorData(String data){
+    public void appendSensorData(String data, boolean msgOver){
         rawSensorData += data;
+        if(msgOver){
+            parseRawSensorData(rawSensorData);
+            rawSensorData = "";
+        }
     }
 
+    private void parseRawSensorData(String sensorData){
+        System.out.println(sensorData);
+        //TODO: write parser for sensor data
+
+    }
+
+    public void setLastSync(String time){
+        lastSync = time;
+    }
+
+    public String getLastSync() {
+        return lastSync;
+    }
 }

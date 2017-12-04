@@ -92,12 +92,15 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sync_btn:
                 btManager.setMacAddress(dataManager.getMacAddress());
-                if(!btManager.isEnabled()){
+                if(!btManager.isSupported()){
+                    Toast.makeText(this, "Bluetooth não suportado neste dispositivo", Toast.LENGTH_SHORT).show();
+                }else if(!btManager.isEnabled()){
                     Toast.makeText(this, "Habilite o Bluetooth para sincronizar", Toast.LENGTH_SHORT).show();
                 }else if (!btManager.isPaired()){
                     Toast.makeText(this, "Dispositivo não pareado", Toast.LENGTH_SHORT).show();
                 } else{
-                    new ConnectToBTServer().execute();
+//                    new ConnectToBTServer().execute();
+                    btManager.startConnection();
                 }
                 break;
             case R.id.config_btn:

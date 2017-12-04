@@ -26,8 +26,8 @@
     <dimen name="edit_menu_number_padding_top">4dp</dimen>
 
     <!--Sensor Data paddings-->
-    <dimen name="tablerow_vertical_padding">4dp</dimen>
-    <dimen name="tablerow_horizontal_padding">16dp</dimen>
+    <dimen name="sensor_square_vertical_padding">8dp</dimen>
+    <dimen name="sensor_square_horizontal_padding">24dp</dimen>
 
     <!--Settings-->
     <dimen name="settings_item_general_padding">16dp</dimen>
@@ -35,7 +35,7 @@
 
 
     <!--Text sizes-->
-    <dimen name="text_size_sensor_data_values">16sp</dimen>
+    <dimen name="text_size_sensor_data_values">32sp</dimen>
     <dimen name="text_size_sensor_data_labels">16sp</dimen>
     <dimen name="text_size_irrigation_mode_label">16sp</dimen>
     <dimen name="text_size_schedule_weekday">12sp</dimen>
