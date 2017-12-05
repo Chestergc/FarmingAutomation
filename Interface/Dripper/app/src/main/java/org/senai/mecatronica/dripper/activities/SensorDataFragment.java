@@ -29,7 +29,7 @@ public class SensorDataFragment extends Fragment {
     //temporary variables relative to final
 //    private Integer temperature;
 //    private Integer moisture;
-//    private Integer luminosity;
+//    private String luminosity;
 //    private String soilMoisture;
 //    private String lastSync;
 
@@ -127,7 +127,7 @@ public class SensorDataFragment extends Fragment {
         DataManager dataManager = DataManager.getInstance(getContext());
         Integer temperature = dataManager.getCurrentTemperature();
         Integer moisture = dataManager.getCurrentMoisture();
-        Integer luminosity = dataManager.getCurrentLuminosity();
+        String luminosity = dataManager.getCurrentLuminosity();
         String soilMoisture = dataManager.getCurrentSoilMoisture();
         String lastSync = "Última atualização feita em: " + dataManager.getLastSync();
 

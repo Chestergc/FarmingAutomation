@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_btn:
+                /*
                 btManager.setMacAddress(dataManager.getMacAddress());
                 if(!btManager.isSupported()){
                     Toast.makeText(this, "Bluetooth não suportado neste dispositivo", Toast.LENGTH_SHORT).show();
@@ -103,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     btManager.startConnection();
                 }
                 break;
+                */
+                dataManager.testDataParser();
             case R.id.config_btn:
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 break;

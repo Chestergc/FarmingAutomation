@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.JsonReader;
 import android.util.JsonWriter;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,8 @@ import java.util.List;
  */
 
 public class DataManager {
+
+    private static final String TAG = "Data Manager";
 
     //data labels
     private static final String LABEL_AUTO = "auto";
@@ -60,7 +65,7 @@ public class DataManager {
     //Field Data
     private Integer currentTemperature;
     private Integer currentMoisture;
-    private Integer currentLuminosity;
+    private String currentLuminosity;
     private String currentSoilMoisture;
     private String lastIrrigation;
     private String rawSensorData;
@@ -201,7 +206,7 @@ public class DataManager {
             JSONObject lastLog = logs.getJSONObject(0);
             currentTemperature = lastLog.getInt(LABEL_TEMPERATURE);
             currentMoisture = lastLog.getInt(LABEL_MOISTURE);
-            currentLuminosity = lastLog.getInt(LABEL_LUMINOSITY);
+            currentLuminosity = lastLog.getString(LABEL_LUMINOSITY);
             currentSoilMoisture = lastLog.getString(LABEL_SOIL_MOISTURE);
         }
     }
@@ -260,13 +265,7 @@ public class DataManager {
         }).start();
     }
 
-    private void writeFieldDataFile(final String lastIrrigation, final int numLogs, final int temperature, final int moisture, final int luminosity, final String soilMoisture){
-//        {
-//        "lastIrrigationTime":"-",
-//        "logFrequency":0,
-//        "numberOfLogs":0,
-//        "logs": []
-//    }
+    private void writeFieldDataFile(final String lastIrrigation, final int numLogs, final int temperature, final int moisture, final String luminosity, final String soilMoisture){
 
         new Thread(new Runnable() {
             public void run() {
@@ -438,7 +437,7 @@ public class DataManager {
         return currentMoisture;
     }
 
-    public Integer getCurrentLuminosity() {
+    public String getCurrentLuminosity() {
         return currentLuminosity;
     }
 
@@ -472,15 +471,81 @@ public class DataManager {
     public void appendSensorData(String data, boolean msgOver){
         rawSensorData += data;
         if(msgOver){
-            parseRawSensorData(rawSensorData);
+            try{
+                parseRawSensorData(rawSensorData);
+            } catch (IOException e){
+                Log.e(TAG, "Error parsing data");
+            }
+
             rawSensorData = "";
         }
     }
 
-    private void parseRawSensorData(String sensorData){
-        System.out.println(sensorData);
-        //TODO: write parser for sensor data
+    private void parseRawSensorData(String sensorData) throws IOException{
+        //System.out.println(sensorData);
+        String lastIrrigation = "";
+        int numLogs;
+        int temperature = 0;
+        int moisture = 0;
+        String luminosity = "day";
+        String soilMoisture = "low";
 
+        //parser for sensor data
+        JsonReader reader = new JsonReader(new StringReader(sensorData));
+        reader.beginObject();       //{
+            reader.nextName();      //"logFrequency"
+            reader.nextInt();       //60
+            reader.nextName();      //numberOfLogs
+            numLogs = reader.nextInt();       //1
+            reader.nextName();      //"logs"
+            reader.beginArray();    //[
+            for(int i = 0; i < numLogs; i++){
+                reader.beginObject(); //{
+                    reader.nextName();      //"date"
+                    reader.nextString();       // %2d/%2d/%4d
+                    reader.nextName();      //"time"
+                    reader.nextString();       // %2d:%2d:%2d
+                    reader.nextName();      //"numberOfSensors"
+                    int numSensors = reader.nextInt();       // 4
+                    reader.nextName();      //"sensors"
+                    reader.beginArray();    //[
+                    for(int j = 0; j < numSensors; j++){
+                        reader.beginObject(); //{
+                        reader.nextName();      //"name"
+                        String name = reader.nextString(); // sensorName
+                        reader.nextName(); //"data"
+                        switch (name){
+                            case "Temperature":
+                                temperature = reader.nextInt(); //25
+                                reader.nextName(); //"unit"
+                                reader.nextString(); //"°C"
+                                break;
+                            case "Moisture":
+                                moisture = reader.nextInt(); //32
+                                reader.nextName(); //"unit"
+                                reader.nextString(); //"%"
+                                break;
+                            case "Luminosity":
+                                luminosity = reader.nextString(); //Day
+                                reader.nextName(); //"unit"
+                                reader.nextString(); //""
+                                break;
+                            case "Soil Moisture":
+                                soilMoisture = reader.nextString(); //Low
+                                reader.nextName(); //"unit"
+                                reader.nextString(); //""
+                                break;
+                        }
+                        reader.endObject(); //}
+                    }
+                    reader.endArray();
+                reader.endObject(); //}
+            }
+            reader.endArray(); //]
+        reader.endObject(); //}
+        reader.close();
+
+        //writeFieldDataFile(lastIrrigation,numLogs,temperature,moisture,luminosity,soilMoisture);
     }
 
     public void setLastSync(String time){
@@ -489,5 +554,49 @@ public class DataManager {
 
     public String getLastSync() {
         return lastSync;
+    }
+
+    public void testDataParser(){
+        String testString = "{\n" +
+                "\t\"logFrequency\":60,\n" +
+                "\t\"numberOfLogs\":1,\n" +
+                "\t\"logs\":\n" +
+                "\t[\n" +
+                "\t\t{\n" +
+                "\t\t\t\"date\":\"12/11/2017\",\n" +
+                "\t\t\t\"time\":\"06:11:00\",\n" +
+                "\t\t\t\"numberOfSensors\":4,\n" +
+                "\t\t\t\"sensors\":\n" +
+                "\t\t\t[\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"name\":\"Temperature\",\n" +
+                "\t\t\t\t\t\"data\":22,\n" +
+                "\t\t\t\t\t\"unit\":\"°C\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"name\":\"Moisture\",\n" +
+                "\t\t\t\t\t\"data\":35,\n" +
+                "\t\t\t\t\t\"unit\":\"%\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"name\":\"Luminosity\",\n" +
+                "\t\t\t\t\t\"data\":Day,\n" +
+                "\t\t\t\t\t\"unit\":\"Lux\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"name\":\"Soil Moisture\",\n" +
+                "\t\t\t\t\t\"data\":\"Low\",\n" +
+                "\t\t\t\t\t\"unit\":\"\"\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t]\n" +
+                "\t\t}\n" +
+                "\t]\n" +
+                "}";
+        try{
+            parseRawSensorData(testString);
+        } catch (IOException e){
+            Log.e("Test Parser", "Error parsing data");
+        }
+
     }
 }

@@ -8,9 +8,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.MainThread;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.senai.mecatronica.dripper.activities.MainActivity;
 import org.senai.mecatronica.dripper.helpers.DateOperations;
 
 import java.io.BufferedInputStream;
@@ -164,9 +166,10 @@ public class BluetoothManager {
             int len = 0;
             while (len != -1){
 
-                len = inputStream.read((buffer));
+                len = inputStream.read(buffer);
                 connectedThread.write(buffer);
             }
+            System.out.println(inputStream.toString());
             inputStream.close();
         }catch (IOException e){
             Log.e(TAG, "Unable to send irrigation data");
@@ -181,20 +184,20 @@ public class BluetoothManager {
         private final BluetoothDevice mmDevice;
         private static final String TAG = "Connect Thread";
         private final UUID MY_UUID = UUID.fromString("00001105-0000-1000-8000-00805f9b34fb");
-        private ProgressDialog connectingDialog = new ProgressDialog(context);
+        private ProgressDialog connectingDialog = new ProgressDialog(context.getApplicationContext());
 
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             mmDevice = device;
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
-
+                showConnectingDialog();
                 tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 //                tmp = device.createRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
                 //reflection (getclass.getmethod)
 //                Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
 //                tmp = (BluetoothSocket) m.invoke(device, 1);
-                showConnectingDialog();
+
                 Log.i(TAG, "RFCOMM Socket created");
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
@@ -310,7 +313,8 @@ public class BluetoothManager {
         public void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
-//                Log.i(TAG, "Sending bytes: " + new String(bytes));
+                System.out.println(bytes);
+                Log.i(TAG, "Sending bytes: " + new String(bytes));
                 Log.i(TAG, "Send bytes successful");
             } catch (IOException e) {
                 Log.e(TAG, "Error writing message");
