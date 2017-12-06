@@ -55,6 +55,8 @@ def checkWater(wtrsens):
 
 def outputWater(checkwtr):
     toggle = checkwtr
+    global lastdate
+    global lasthour
     if toggle==True:
         ##Toggle Output;
         waterValve.on()
@@ -62,8 +64,8 @@ def outputWater(checkwtr):
         ##Time/date Server
         timebufi=str(time.strftime('%X %x'))
         actuali=timebuf.split()
-        global lastdate = str(actual[1])
-        global lasthour = str(actual[0])
+        lastdate = str(actual[1])
+        lasthour = str(actual[0])
         #Sleep+turnoff blueled
         time.sleep(1)
         waterValve.off()
@@ -138,7 +140,7 @@ if __name__ == "__main__":
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
 
         ##FixVars
-        
+
         if temperature is None:
             temperature = "N/A"
         else:
