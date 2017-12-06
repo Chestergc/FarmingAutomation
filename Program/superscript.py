@@ -14,7 +14,7 @@ import Adafruit_DHT     #DHT11 lib
 ##SETUP
 ###Input
 waterSensor = gpiozero.Button(pin=22, pull_up=False)        ##WATER SENSOR AS BUTTON
-ldr=gpiozero.LightSensor(pin=18)                            ##LDR as LightSensor
+ldr=gpiozero.LightSensor(pin=21)                            ##LDR as LightSensor
 sensor=Adafruit_DHT.DHT11                                   ##DHT from Lib
 
 ###OUTPUT
@@ -26,8 +26,8 @@ blue=gpiozero.LED(24)                ##BLUE MEANS CRY
 ###Variables
 #mac="10:3B:59:B1:B3:C8"             #Endereço bluetooth android
 day, soil, ctrLogs = "day", "low", 1#LDR, SoilSensor, LogCounter
-freq, senscount = 60, 4             #Read Frequency, Number of Sensors
-
+freq = 60                           #Read Frequency
+lastdate, lasthour = "", ""         #Last Irrigation data
 
 #CLASSES
 ''' This is for Threading, later on if time serves it's purpose
@@ -59,6 +59,12 @@ def outputWater(checkwtr):
         ##Toggle Output;
         waterValve.on()
         blue.on()
+        ##Time/date Server
+        timebufi=str(time.strftime('%X %x'))
+        actuali=timebuf.split()
+        global lastdate = str(actual[1])
+        global lasthour = str(actual[0])
+        #Sleep+turnoff blueled
         time.sleep(1)
         waterValve.off()
         blue.off()
@@ -130,6 +136,8 @@ if __name__ == "__main__":
         hour=str(actual[0])
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
+        temperature = int(temperature)
+        humidity = int(humidity)
 
         if(checkLight(ldr)==True):
             day="day"
@@ -140,14 +148,18 @@ if __name__ == "__main__":
             soil="High"
         else:
             soil="Low"
+        ##OutputWater
+        outputWater(checkWater(waterSensor))
 
+        ##OutputFix
         outputDict = {
         'logFrequency':freq,
         'numberOfLogs':ctrLogs,
         'logs':[{
             'date':date,
             'time':hour,
-            'numberOfSensors':senscount,
+            'lastdate':lastdate,
+            'lasthour':lasthour,
             'temperature':temperature,
             'moisture':humidity,
             'luminosity':day,
@@ -155,8 +167,7 @@ if __name__ == "__main__":
             }]
         }
 
-        #Processing and Output
-        outputWater(checkWater(waterSensor))
+        #Processing
         server(**outputDict)
         ctrLogs+=1
         green.off()
