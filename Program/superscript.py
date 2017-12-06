@@ -155,11 +155,11 @@ if __name__ == "__main__":
         outputDict = {
         'logFrequency':freq,
         'numberOfLogs':ctrLogs,
+        'lastdate':lastdate,
+        'lasthour':lasthour,
         'logs':[{
             'date':date,
             'time':hour,
-            'lastdate':lastdate,
-            'lasthour':lasthour,
             'temperature':temperature,
             'moisture':humidity,
             'luminosity':day,
