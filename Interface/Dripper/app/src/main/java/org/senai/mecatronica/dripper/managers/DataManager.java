@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
@@ -19,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +50,8 @@ public class DataManager {
     private static final String LABEL_LUMINOSITY = "luminosity";
     private static final String LABEL_SOIL_MOISTURE = "soilMoisture";
 
-    private static final String LABEL_SHAREDPREFS = "sharedPreferences";
+    private static final String PREFS_MAC_ADDRESS = "macAddress";
+    private static final String PREFS_LAST_SYNC = "lastSync";
 
     private static final String IRRIGATION_FILE = "default_irrigation_data.json";
     private static final String FIELD_DATA_FILE = "default_field_data.json";
@@ -265,7 +264,7 @@ public class DataManager {
         }).start();
     }
 
-    private void writeFieldDataFile(final String lastIrrigation, final int numLogs, final int temperature, final int moisture, final String luminosity, final String soilMoisture){
+    private void writeFieldDataFile(final String lastIrrigation, final int numLogs, final Integer temperature, final Integer moisture, final String luminosity, final String soilMoisture){
 
         new Thread(new Runnable() {
             public void run() {
@@ -288,10 +287,26 @@ public class DataManager {
                     writer.beginArray();
                     for(int i = 0; i < numLogs; i++){
                         writer.beginObject();
-                        writer.name(LABEL_TEMPERATURE).value(temperature);
-                        writer.name(LABEL_MOISTURE).value(moisture);
-                        writer.name(LABEL_LUMINOSITY).value(luminosity);
-                        writer.name(LABEL_SOIL_MOISTURE).value(soilMoisture);
+                        if(temperature.equals(null)){
+                            writer.name(LABEL_TEMPERATURE).value("N/A");
+                        }else{
+                            writer.name(LABEL_TEMPERATURE).value(temperature);
+                        }
+                        if(moisture.equals(null)){
+                            writer.name(LABEL_MOISTURE).value("N/A");
+                        }else{
+                            writer.name(LABEL_MOISTURE).value(moisture);
+                        }
+                        if(luminosity.equals(null)){
+                            writer.name(LABEL_LUMINOSITY).value("N/A");
+                        }else{
+                            writer.name(LABEL_LUMINOSITY).value(luminosity);
+                        }
+                        if(soilMoisture.equals(null)){
+                            writer.name(LABEL_SOIL_MOISTURE).value("N/A");
+                        }else{
+                            writer.name(LABEL_SOIL_MOISTURE).value(soilMoisture);
+                        }
                         writer.endObject();
                     }
                     writer.endArray();
@@ -456,12 +471,12 @@ public class DataManager {
 
     public void setMacAddress(String address){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(LABEL_SHAREDPREFS, address);
+        editor.putString(PREFS_MAC_ADDRESS, address);
         editor.apply();
     }
 
     public String getMacAddress(){
-        return sharedPreferences.getString(LABEL_SHAREDPREFS, "00:00:00:00:00:00");
+        return sharedPreferences.getString(PREFS_MAC_ADDRESS, "00:00:00:00:00:00");
     }
 
     public Uri getIrrigationDataUri(){
@@ -473,87 +488,72 @@ public class DataManager {
         if(msgOver){
             try{
                 parseRawSensorData(rawSensorData);
+            } catch (IllegalStateException e){
+                Log.e(TAG, "Invalid data format");
+            } catch (JSONException e){
+                e.printStackTrace();
+                Log.e(TAG, "Error parsing JSON");
             } catch (IOException e){
-                Log.e(TAG, "Error parsing data");
+                Log.e(TAG, "Error updating data");
             }
 
             rawSensorData = "";
         }
     }
 
-    private void parseRawSensorData(String sensorData) throws IOException{
+    private void parseRawSensorData(String sensorData) throws IllegalStateException, JSONException, IOException{
         //System.out.println(sensorData);
         String lastIrrigation = "";
         int numLogs;
-        int temperature = 0;
-        int moisture = 0;
-        String luminosity = "day";
-        String soilMoisture = "low";
+        Integer temperature = null;
+        Integer moisture = null;
+        String luminosity = null;
+        String soilMoisture = null;
 
-        //parser for sensor data
-        JsonReader reader = new JsonReader(new StringReader(sensorData));
-        reader.beginObject();       //{
-            reader.nextName();      //"logFrequency"
-            reader.nextInt();       //60
-            reader.nextName();      //numberOfLogs
-            numLogs = reader.nextInt();       //1
-            reader.nextName();      //"logs"
-            reader.beginArray();    //[
-            for(int i = 0; i < numLogs; i++){
-                reader.beginObject(); //{
-                    reader.nextName();      //"date"
-                    reader.nextString();       // %2d/%2d/%4d
-                    reader.nextName();      //"time"
-                    reader.nextString();       // %2d:%2d:%2d
-                    reader.nextName();      //"numberOfSensors"
-                    int numSensors = reader.nextInt();       // 4
-                    reader.nextName();      //"sensors"
-                    reader.beginArray();    //[
-                    for(int j = 0; j < numSensors; j++){
-                        reader.beginObject(); //{
-                        reader.nextName();      //"name"
-                        String name = reader.nextString(); // sensorName
-                        reader.nextName(); //"data"
-                        switch (name){
-                            case "Temperature":
-                                temperature = reader.nextInt(); //25
-                                reader.nextName(); //"unit"
-                                reader.nextString(); //"°C"
-                                break;
-                            case "Moisture":
-                                moisture = reader.nextInt(); //32
-                                reader.nextName(); //"unit"
-                                reader.nextString(); //"%"
-                                break;
-                            case "Luminosity":
-                                luminosity = reader.nextString(); //Day
-                                reader.nextName(); //"unit"
-                                reader.nextString(); //""
-                                break;
-                            case "Soil Moisture":
-                                soilMoisture = reader.nextString(); //Low
-                                reader.nextName(); //"unit"
-                                reader.nextString(); //""
-                                break;
-                        }
-                        reader.endObject(); //}
-                    }
-                    reader.endArray();
-                reader.endObject(); //}
+        sensorData = sensorData.replace("', '", ""); //remove comma separators
+        sensorData = sensorData.substring(sensorData.indexOf('{'),sensorData.lastIndexOf('}')+1); //enclose object
+        sensorData = sensorData.replaceAll("\\\\n", "");
+        sensorData = sensorData.replaceAll("\\\\t", "");
+
+        JSONObject jsonData = new JSONObject(sensorData);
+        numLogs = jsonData.getInt("numberOfLogs");
+        JSONArray logs = jsonData.getJSONArray("logs");
+
+        JSONObject lastLog = logs.getJSONObject(0);
+        int numSensors = lastLog.getInt("numberOfSensors");
+        JSONArray sensors = lastLog.getJSONArray("sensors");
+        for(int i = 0; i < numSensors; i++){
+            String sensorName = sensors.getJSONObject(i).getString("name");
+            switch (sensorName){
+                case "Temperature":
+                    temperature = sensors.getJSONObject(i).getInt("data");
+                    break;
+                case "Moisture":
+                    moisture = sensors.getJSONObject(i).getInt("data");
+                    break;
+                case "Luminosity":
+                    luminosity = sensors.getJSONObject(i).getString("data");
+                    break;
+                case "Soil Moisture":
+                    soilMoisture = sensors.getJSONObject(i).getString("data");
+                    break;
             }
-            reader.endArray(); //]
-        reader.endObject(); //}
-        reader.close();
+        }
 
-        //writeFieldDataFile(lastIrrigation,numLogs,temperature,moisture,luminosity,soilMoisture);
+
+        writeFieldDataFile(lastIrrigation,numLogs,temperature,moisture,luminosity,soilMoisture);
+        updateSensorData();
+
     }
 
     public void setLastSync(String time){
-        lastSync = time;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PREFS_LAST_SYNC, time);
+        editor.apply();
     }
 
     public String getLastSync() {
-        return lastSync;
+        return sharedPreferences.getString(PREFS_LAST_SYNC, "");
     }
 
     public void testDataParser(){
@@ -594,8 +594,10 @@ public class DataManager {
                 "}";
         try{
             parseRawSensorData(testString);
-        } catch (IOException e){
+        } catch (JSONException e){
             Log.e("Test Parser", "Error parsing data");
+        } catch (IOException e){
+            Log.e("Test Parser", "Error updating data");
         }
 
     }

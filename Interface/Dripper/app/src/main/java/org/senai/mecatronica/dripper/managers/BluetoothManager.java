@@ -8,17 +8,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.MainThread;
 import android.util.Log;
 
 import org.json.JSONException;
-import org.senai.mecatronica.dripper.activities.MainActivity;
 import org.senai.mecatronica.dripper.helpers.DateOperations;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,6 +40,7 @@ public class BluetoothManager {
     private ConnectedThread connectedThread;
     private Handler mHandler;
     private DataManager dataManager;
+
 
     private boolean msgOver;
 
@@ -95,7 +96,7 @@ public class BluetoothManager {
         if(pairedDevices.size() > 0){
             Log.i(TAG, "Target address: " + macAddress);
             for (BluetoothDevice device : pairedDevices) {
-                Log.i(TAG, "Device address: "+ device.getAddress());
+                Log.i(TAG, "Paired device address: "+ device.getAddress());
                 if(device.getAddress().equals(macAddress)){
                     return true;
                 }
@@ -106,10 +107,18 @@ public class BluetoothManager {
 
     public void startConnection(){
         BluetoothDevice targetDevice = btAdapter.getRemoteDevice(macAddress);
-        synchronized (this){
-            connectThread = new ConnectThread(targetDevice);
-            connectThread.start();
+        if(connectThread != null){
+            connectThread.cancel();
+            connectThread = null;
         }
+
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
+        }
+
+        connectThread = new ConnectThread(targetDevice);
+        connectThread.start();
 //        boolean success = false;
 //        final BluetoothSocket mmSocket;
 //        BluetoothSocket tmp = null;
@@ -146,15 +155,21 @@ public class BluetoothManager {
 
 
     public void closeConnection(){
-        connectThread.cancel();
-        connectedThread.cancel();
+        if(connectThread != null){
+            connectThread.cancel();
+            connectedThread = null;
+        }
+        if(connectedThread != null){
+            connectedThread.cancel();
+            connectedThread = null;
+        }
     }
 
     public void setMacAddress(String address){
         this.macAddress = address;
     }
 
-    public void sendIrrigationData(Uri uri){
+    private void sendIrrigationData(Uri uri){
         BufferedInputStream inputStream = null;
         try
         {
@@ -167,7 +182,13 @@ public class BluetoothManager {
             while (len != -1){
 
                 len = inputStream.read(buffer);
-                connectedThread.write(buffer);
+                if(len < 1024 && len > 0){
+                    buffer[len] = (byte) '#';
+                    connectedThread.write(Arrays.copyOfRange(buffer, 0, len+1));
+                } else if(len > 0){
+                    connectedThread.write(buffer);
+                }
+
             }
             System.out.println(inputStream.toString());
             inputStream.close();
@@ -176,6 +197,7 @@ public class BluetoothManager {
         }
     }
 
+
     /**
      * Class to manage Bluetooth connection
      * */
@@ -183,20 +205,23 @@ public class BluetoothManager {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
         private static final String TAG = "Connect Thread";
-        private final UUID MY_UUID = UUID.fromString("00001105-0000-1000-8000-00805f9b34fb");
-        private ProgressDialog connectingDialog = new ProgressDialog(context.getApplicationContext());
+        private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        //private final UUID MY_UUID = UUID.fromString("00001105-0000-1000-8000-00805f9b34fb");
+        //private final UUID MY_UUID = UUID.fromString("e821e169-d793-423b-927b-f9c7a5017fb1");
+        private ProgressDialog connectingDialog = new ProgressDialog(context);
 
         public ConnectThread(BluetoothDevice device) {
             BluetoothSocket tmp = null;
             mmDevice = device;
+            //UUID MY_UUID = device.getUuids()[0].getUuid();
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 showConnectingDialog();
-                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+//                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
 //                tmp = device.createRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
                 //reflection (getclass.getmethod)
-//                Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-//                tmp = (BluetoothSocket) m.invoke(device, 1);
+                Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+                tmp = (BluetoothSocket) m.invoke(device, 1);
 
                 Log.i(TAG, "RFCOMM Socket created");
             } catch (Exception e) {
@@ -220,11 +245,17 @@ public class BluetoothManager {
                     mmSocket.close();
                 } catch (IOException closeException) { }
                 return;
+            } catch (NullPointerException noDevice){
+                Log.i(TAG, "Device not found");
+                return;
+            }
+
+            synchronized (BluetoothManager.this){
+                connectThread = null;
             }
 
             // Do work to manage the connection (in a separate thread)
-            connectedThread = new ConnectedThread(mmSocket);
-            connectedThread.start();
+            connected(mmSocket, mmDevice);
 
         }
 
@@ -247,6 +278,38 @@ public class BluetoothManager {
             connectingDialog.dismiss();
         }
 
+    }
+
+
+    private synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+
+        // Cancel the thread that completed the connection
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
+        }
+
+        // Cancel any thread currently running a connection
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
+        }
+
+        // Start the thread to manage the connection and perform transmissions
+        connectedThread = new ConnectedThread(socket);
+        connectedThread.start();
+
+        // Send the name of the connected device back to the UI Activity
+        /*
+        Message msg = mHandler.obtainMessage(BlueTerm.MESSAGE_DEVICE_NAME);
+        Bundle bundle = new Bundle();
+        bundle.putString(BlueTerm.DEVICE_NAME, device.getName());
+        msg.setData(bundle);
+        mHandler.sendMessage(msg);
+
+
+        setState(STATE_CONNECTED);
+        */
     }
 
     private class ConnectedThread extends Thread {
@@ -275,6 +338,8 @@ public class BluetoothManager {
         public void run() {
             byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
+            //buffer = "Hello".getBytes();
+            //connectedThread.write(buffer);
 
             Uri irrigationDataUri = dataManager.getIrrigationDataUri(); //data to send
             sendIrrigationData(irrigationDataUri);
@@ -307,13 +372,14 @@ public class BluetoothManager {
             } catch (IOException e){
                 System.out.println("Could not read JSON File");
             }
+
         }
 
         /* Call this from the main activity to send data to the remote device */
         public void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
-                System.out.println(bytes);
+
                 Log.i(TAG, "Sending bytes: " + new String(bytes));
                 Log.i(TAG, "Send bytes successful");
             } catch (IOException e) {
@@ -328,5 +394,6 @@ public class BluetoothManager {
             } catch (IOException e) { }
         }
     }
+
 
 }

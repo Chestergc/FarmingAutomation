@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_btn:
-                /*
+
                 btManager.setMacAddress(dataManager.getMacAddress());
                 if(!btManager.isSupported()){
                     Toast.makeText(this, "Bluetooth não suportado neste dispositivo", Toast.LENGTH_SHORT).show();
@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     btManager.startConnection();
                 }
                 break;
-                */
-                dataManager.testDataParser();
+
+                //dataManager.testDataParser();
             case R.id.config_btn:
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 break;
@@ -177,37 +177,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //AsyncTask<Params, Progress, Result>
-    private class ConnectToBTServer extends AsyncTask<Void, Void, Void>{
-        ProgressDialog connectingDialog = new ProgressDialog(MainActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            //set message of the dialog
-            connectingDialog.setMessage("Conectando ao dispositivo");
-            //show dialog
-            connectingDialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            btManager.startConnection();
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if(connectingDialog != null && connectingDialog.isShowing()){
-                connectingDialog.dismiss();
-            }
-//            if(success){
-////                btManager.sendIrrigationData(dataManager.getIrrigationDataUri());
-//                Toast.makeText(MainActivity.this, "Conexão bem sucedida", Toast.LENGTH_LONG).show();
-//            }
-            super.onPostExecute(aVoid);
-        }
-    }
 
 }
