@@ -24,7 +24,7 @@ green=gpiozero.LED(17)               ##GREEN MEANS GO
 blue=gpiozero.LED(24)                ##BLUE MEANS CRY
 
 ###Variables
-#mac="10:3B:59:B1:B3:C8"             #Endereço bluetooth android
+mac="10:3B:59:B1:B3:C8"             #Endereço bluetooth android
 day, soil, ctrLogs = "day", "low", 1#LDR, SoilSensor, LogCounter
 freq, senscount = 60, 4             #Read Frequency, Number of Sensors
 
@@ -42,7 +42,7 @@ class bluetooth (threading.Thread):
        print ("Starting " + self.name)
        comms(self.name)
        print ("Exiting " + self.name)
-
+       
 '''
 
 ##FUNCTIONS
@@ -100,16 +100,30 @@ def comms(threadName):
     client_socket, address = server_socket.accept()
     print("Conexão Estabelecida em", address)
 
-def server(logFrequency, numberOfLogs, logs):
+def server(mac, logFrequency, numberOfLogs, logs):
     print("Updating Server")
     ##JSON OUTPUT
     bufdict = outputDict
-    with open("server.json", 'w') as fp:
+    with open("server.json", 'a') as fp:
         json.dump(bufdict, fp)
         fp.close()
-    with open("backlog.json", 'a') as wp:
-        json.dump(bufdict, wp)
-        wp.close()
+
+    #bluetooth
+    bd_addr=mac
+    port=1
+
+    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+    sock.connect((bd_addr, port))
+
+    sock.send(outputDict['logs']['date'])
+    sock.send(outputDict['logs']['time'])
+    sock.send(outputDict['logs']['numberOfSensors'])
+    sock.send(outputDict['logs']['temperature'])
+    sock.send(outputDict['logs']['moisture'])
+    sock.send(outputDict['logs']['luminosity'])
+    sock.send(outputDict['logs']['soil'])
+    sock.close()
+
     #ServerFixSize
     if(int(file_size(server.json).split()[0])>=10 and file_size(server.json).split()[1]=="MB"):
         subprocess.call(['cp server.json'+'bkp'])
@@ -117,15 +131,35 @@ def server(logFrequency, numberOfLogs, logs):
     else:
         return
 
+##FIX BLUETOOTH DATA INPUT:
+def fix(x):
+    msg = msg[2:-1]
+    inputdict = json.loads(msg)
+    return inputdict
+
+
 ##FEEDBACK LOOP
 if __name__ == "__main__":
     print("Starting main")
     while True:
         #WorkingLED==ON
         green.on()
+        print("green")
 
+        ##FOR LATER IF THERE IS TIME
+        #ThreadSetup
+        #bltThread = bluetooth(1, "Comms-1", 1)
+        #bltThread.start()
+        
+        ##OutputFix
+        #try:
+        #    data=client_socket.recv(1024)
+        #    data=fix(data)
+        #except :
+        #    pass
         timebuf=str(time.strftime('%X %x'))
         actual=timebuf.split()
+        print(actual)
         date=str(actual[1])
         hour=str(actual[0])
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
@@ -135,12 +169,16 @@ if __name__ == "__main__":
             day="day"
         else:
             day="night"
-
+        
+        print(day)
+        
         if(checkWater(waterSensor)==True):
             soil="High"
         else:
             soil="Low"
-
+        
+        print(soil)
+        
         outputDict = {
         'logFrequency':freq,
         'numberOfLogs':ctrLogs,
@@ -157,12 +195,14 @@ if __name__ == "__main__":
 
         #Processing and Output
         outputWater(checkWater(waterSensor))
-        server(**outputDict)
+        print(outputDict)
+        #server(mac)
         ctrLogs+=1
         green.off()
+        print("green")
         endOfCycle(outputDict['logFrequency'])
 
-
+        
         ##End BluetoothSocket
         ##client_socket.close()
         ##server_socket.close()
