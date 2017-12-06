@@ -42,7 +42,7 @@ class bluetooth (threading.Thread):
        print ("Starting " + self.name)
        comms(self.name)
        print ("Exiting " + self.name)
-       
+
 '''
 
 ##FUNCTIONS
@@ -91,39 +91,26 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-def comms(threadName):
-    print("Starting", threadName)
-    server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    port=1
-    server_socket.bind(("",port))
-    server_socket.listen(1)
-    client_socket, address = server_socket.accept()
-    print("Conexão Estabelecida em", address)
+#def comms(threadName):
+    #print("Starting", threadName)
+    #server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    #port=1
+    #server_socket.bind(("",port))
+    #server_socket.listen(1)
+    #client_socket, address = server_socket.accept()
+    #print("Conexão Estabelecida em", address)
 
-def server(mac, logFrequency, numberOfLogs, logs):
+def server(logFrequency, numberOfLogs, logs):
     print("Updating Server")
     ##JSON OUTPUT
     bufdict = outputDict
-    with open("server.json", 'a') as fp:
+    with open("server.json", 'w') as fp:
         json.dump(bufdict, fp)
         fp.close()
-
-    #bluetooth
-    bd_addr=mac
-    port=1
-
-    sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-    sock.connect((bd_addr, port))
-
-    sock.send(outputDict['logs']['date'])
-    sock.send(outputDict['logs']['time'])
-    sock.send(outputDict['logs']['numberOfSensors'])
-    sock.send(outputDict['logs']['temperature'])
-    sock.send(outputDict['logs']['moisture'])
-    sock.send(outputDict['logs']['luminosity'])
-    sock.send(outputDict['logs']['soil'])
-    sock.close()
-
+    with open("backlog.json", 'a') as wp:
+        json.dump(bufdict, wp)
+        wp.write("\n")
+        wp.close()
     #ServerFixSize
     if(int(file_size(server.json).split()[0])>=10 and file_size(server.json).split()[1]=="MB"):
         subprocess.call(['cp server.json'+'bkp'])
@@ -150,7 +137,7 @@ if __name__ == "__main__":
         #ThreadSetup
         #bltThread = bluetooth(1, "Comms-1", 1)
         #bltThread.start()
-        
+
         ##OutputFix
         #try:
         #    data=client_socket.recv(1024)
@@ -169,16 +156,16 @@ if __name__ == "__main__":
             day="day"
         else:
             day="night"
-        
+
         print(day)
-        
+
         if(checkWater(waterSensor)==True):
             soil="High"
         else:
             soil="Low"
-        
+
         print(soil)
-        
+
         outputDict = {
         'logFrequency':freq,
         'numberOfLogs':ctrLogs,
@@ -202,7 +189,7 @@ if __name__ == "__main__":
         print("green")
         endOfCycle(outputDict['logFrequency'])
 
-        
+
         ##End BluetoothSocket
         ##client_socket.close()
         ##server_socket.close()
