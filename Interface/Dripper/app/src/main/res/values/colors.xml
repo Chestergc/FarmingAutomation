@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#7cb342</color>
+    <color name="colorPrimaryDark">#212121</color>
+    <color name="colorAccent">#4a148c</color>
+    <color name="colorError">#c62828</color>
+    <color name="colorBackground">#fafafa</color>
+    <color name="colorDarkBackground">#757575</color>
+    <color name="colorShadows">#bdbdbd</color>
+
+
+
+
+    <!--Bright Icons-->
+    <!--<color name="colorBottomMenu">#77b61c</color>-->
+    <!--<color name="colorBrightOrange">#FF471D</color>-->
+    <!--<color name="colorBrightBlue">#3CBDE3</color>-->
+
+    <!--<color name="colorMainText">#ceba9f</color>-->
+
+
 </resources>

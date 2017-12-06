@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_edit_irrigation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.senai.mecatronica.dripper.activities.EditIrrigationActivity">
+
+    <TextView
+        android:text="@string/edit_menu_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_mode"
+        android:paddingLeft="@dimen/edit_menu_label_padding"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:id="@+id/spinner_edit_menu_mode"
+        android:layout_below="@+id/lbl_edit_menu_mode"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinner_irrigation_modes_array"
+        android:prompt="@string/spinner_irrigation_modes_prompt"
+        android:layout_marginLeft="-4dp"
+        />
+
+    <TextView
+        android:text="@string/edit_menu_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_time"
+        android:layout_below="@+id/spinner_edit_menu_mode"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/edit_menu_label_padding"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:ems="10"
+        android:id="@+id/txt_edit_menu_time"
+        android:hint="12:00 PM"
+        android:layout_below="@+id/lbl_edit_menu_time"
+        android:focusable="false"
+        android:paddingTop="2dp"
+        android:focusableInTouchMode="false"/>
+
+    <!--<View-->
+        <!--android:layout_width="96dp"-->
+        <!--android:layout_height="2dip"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_below="@+id/txt_edit_menu_time"-->
+        <!--/>-->
+
+    <TextView
+        android:text="@string/edit_menu_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_duration"
+        android:layout_below="@id/txt_edit_menu_time"
+        android:paddingLeft="@dimen/edit_menu_label_padding"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        />
+
+    <EditText
+        android:layout_width="@dimen/edit_menu_duration_number_width"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:id="@+id/num_edit_menu_hours"
+        android:layout_below="@id/lbl_edit_menu_duration"
+        android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"/>
+
+    <!--<View-->
+        <!--android:layout_width="@dimen/edit_menu_duration_number_width"-->
+        <!--android:layout_height="2dip"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_below="@id/num_edit_menu_hours"-->
+    <!--/>-->
+
+    <TextView
+        android:text="h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_hours"
+        android:layout_toRightOf="@id/num_edit_menu_hours"
+        android:layout_toEndOf="@id/num_edit_menu_hours"
+        android:layout_alignBottom="@id/num_edit_menu_hours"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        />
+
+    <EditText
+        android:layout_width="@dimen/edit_menu_duration_number_width"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/num_edit_menu_minutes"
+        android:layout_below="@id/lbl_edit_menu_duration"
+        android:layout_toRightOf="@id/lbl_edit_menu_hours"
+        android:layout_toEndOf="@id/lbl_edit_menu_hours"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
+        />
+
+
+    <!--<View-->
+        <!--android:layout_width="@dimen/edit_menu_duration_number_width"-->
+        <!--android:layout_height="2dip"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_below="@id/num_edit_menu_minutes"-->
+        <!--android:layout_toRightOf="@id/lbl_edit_menu_hours"-->
+        <!--android:layout_toEndOf="@id/lbl_edit_menu_hours"-->
+        <!--/>-->
+
+    <TextView
+        android:text="m"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_minutes"
+        android:layout_toRightOf="@id/num_edit_menu_minutes"
+        android:layout_toEndOf="@id/num_edit_menu_minutes"
+        android:layout_alignBottom="@id/num_edit_menu_minutes"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="4dp"
+        />
+
+    <EditText
+        android:layout_width="@dimen/edit_menu_duration_number_width"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/num_edit_menu_seconds"
+        android:layout_below="@id/lbl_edit_menu_duration"
+        android:layout_toRightOf="@id/lbl_edit_menu_minutes"
+        android:layout_toEndOf="@id/lbl_edit_menu_minutes"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
+        />
+
+    <!--<View-->
+        <!--android:layout_width="@dimen/edit_menu_duration_number_width"-->
+        <!--android:layout_height="2dip"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_below="@id/num_edit_menu_seconds"-->
+        <!--android:layout_toRightOf="@id/lbl_edit_menu_minutes"-->
+        <!--android:layout_toEndOf="@id/lbl_edit_menu_minutes"-->
+        <!--/>-->
+
+    <TextView
+        android:text="s"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_seconds"
+        android:layout_toRightOf="@id/num_edit_menu_seconds"
+        android:layout_toEndOf="@id/num_edit_menu_seconds"
+        android:layout_alignBottom="@id/num_edit_menu_seconds"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        />
+
+
+    <TextView
+        android:text="@string/edit_menu_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lbl_edit_menu_date"
+        android:layout_below="@id/num_edit_menu_hours"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/edit_menu_label_padding"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/date_edit_menu"
+        android:hint="11/11/17"
+        android:layout_below="@id/lbl_edit_menu_date"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:paddingTop="@dimen/edit_menu_number_padding_top"
+        />
+
+    <!--<View-->
+        <!--android:layout_width="@dimen/edit_menu_date_width"-->
+        <!--android:layout_height="2dip"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_below="@id/date_edit_menu"-->
+        <!--/>-->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@color/colorShadows"
+        android:layout_marginTop="22dp"
+        android:layout_below="@id/date_edit_menu"
+        android:id="@+id/layout_edit_menu_weekdays"
+        android:layout_height="@dimen/edit_menu_week_height">
+
+        <TextView
+            android:text="@string/schedule_sunday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_sunday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_monday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_monday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_tuesday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_tuesday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_wednesday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_wednesday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_thursday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_thursday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_friday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_friday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="@dimen/edit_menu_divisor_width"
+            android:layout_height="fill_parent"
+            android:background="@color/colorBackground"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:text="@string/schedule_saturday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/week_pick_saturday"
+            android:textColor="@color/colorBackground"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/text_size_edit_menu_weekday"
+            android:gravity="center"/>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/layout_edit_menu_btns">
+
+        <Button
+            android:text="@string/edit_menu_btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_edit_menu_cancel"
+            android:layout_weight="1"/>
+
+        <Button
+            android:text="@string/edit_menu_btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_edit_menu_save"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

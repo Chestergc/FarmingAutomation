@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txt_mac_address_edit"
+        android:hint="@string/settings_default_mac_address"
+        android:gravity="center"/>
+
+    <Button
+        android:text="@string/dialog_btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_mac_address_edit"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btn_ok_dialog_mac_address"/>
+</RelativeLayout>

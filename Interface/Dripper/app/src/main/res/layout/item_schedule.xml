@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="start"
+              android:background="@drawable/border_shadow"
+    >
+
+
+
+    <ImageView
+        app:srcCompat="@drawable/ic_calendar"
+        android:id="@+id/img_calendar"
+        android:layout_weight="0.2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6">
+
+        <TextView
+            android:text="@string/scheduled_irrigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_scheduled_irrigation"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_schedule_text"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin">
+
+            <TextView
+                android:text="@string/schedule_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_start"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.1"/>
+
+            <TextView
+                android:text="15:30:50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_start_time"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.4"/>
+
+            <TextView
+                android:text="@string/schedule_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_end"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_duration"
+                android:text="10s"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.4"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin"
+            android:id="@+id/layout_schedule_date"
+            android:layout_marginBottom="@dimen/schedule_text_vertical_margin">
+
+            <TextView
+                android:text="@string/schedule_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lbl_schedule_date"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.1"/>
+
+            <TextView
+                android:text="11/10/10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_date"
+                android:textSize="@dimen/text_size_schedule_text"
+                android:layout_weight="0.9"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/schedule_text_vertical_margin"
+            android:layout_marginBottom="@dimen/schedule_text_vertical_margin"
+            android:id="@+id/layout_schedule_weekdays">
+
+            <TextView
+                android:text="@string/schedule_monday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_monday"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_tuesday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_tuesday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_wednesday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_wednesday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_thursday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_thursday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_friday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_friday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_saturday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_saturday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:text="@string/schedule_sunday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_schedule_sunday"
+                android:layout_marginLeft="@dimen/schedule_weekday_horizontal_margin"
+                android:layout_marginRight="@dimen/schedule_weekday_horizontal_margin"
+                android:textSize="@dimen/text_size_schedule_weekday"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_show_menu"
+        android:id="@+id/img_btn_item_schedule_menu"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="8dp"
+        />
+
+</LinearLayout>

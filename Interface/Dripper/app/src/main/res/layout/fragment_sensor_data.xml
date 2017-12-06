@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/sensor_data_fragment_content">
+
+    <TextView
+        android:text="Última atualização dia: 10/11/17 hora: 13:50:00"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txt_sensor_last_update"
+        android:padding="2dp"
+        android:background="@color/colorDarkBackground"
+        android:textColor="@color/colorBackground"
+        android:textSize="@dimen/text_size_last_update"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_sensor_data_row1"
+        android:layout_below="@id/txt_sensor_last_update">
+
+        <TextView
+            android:text="25°C"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_sensor_temperature_data"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="bottom|end"
+            android:paddingBottom="@dimen/sensor_square_vertical_padding"
+            android:paddingRight="@dimen/sensor_square_horizontal_padding"
+            android:paddingEnd="@dimen/sensor_square_horizontal_padding"
+            android:layout_weight="1"
+            android:background="@drawable/temperature"/>
+
+        <TextView
+            android:text="32%"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_sensor_moisture_data"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="bottom|end"
+            android:paddingBottom="@dimen/sensor_square_vertical_padding"
+            android:paddingRight="@dimen/sensor_square_horizontal_padding"
+            android:paddingEnd="@dimen/sensor_square_horizontal_padding"
+            android:layout_weight="1"
+            android:background="@drawable/humidity"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_sensor_data_row2"
+        android:layout_below="@id/layout_sensor_data_row1">
+
+        <TextView
+            android:text="Dia"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_sensor_luminosity_data"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="bottom|end"
+            android:paddingBottom="@dimen/sensor_square_vertical_padding"
+            android:paddingRight="@dimen/sensor_square_horizontal_padding"
+            android:paddingEnd="@dimen/sensor_square_horizontal_padding"
+            android:layout_weight="1"
+            android:background="@drawable/luminosity"/>
+
+        <TextView
+            android:text="Seco"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_sensor_soil_moisture_data"
+            android:textSize="@dimen/text_size_sensor_data_values"
+            android:gravity="bottom|end"
+            android:paddingBottom="@dimen/sensor_square_vertical_padding"
+            android:paddingRight="@dimen/sensor_square_horizontal_padding"
+            android:paddingEnd="@dimen/sensor_square_horizontal_padding"
+            android:layout_weight="1"
+            android:background="@drawable/soil_humidity"/>
+    </LinearLayout>
+
+    <!--<TableLayout android:layout_width="match_parent"-->
+                 <!--android:layout_height="wrap_content"-->
+                 <!--android:id="@+id/sensor_data_fragment_table"-->
+                 <!--android:padding="24dp"-->
+                 <!--android:layout_below="@+id/txt_sensor_last_update">-->
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="@dimen/tablerow_vertical_padding"-->
+        <!--android:paddingLeft="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingRight="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingTop="@dimen/tablerow_vertical_padding">-->
+
+        <!--<TextView-->
+            <!--android:text="@string/sensor_data_temperature"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_temperature"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_labels"-->
+            <!--android:gravity="left|center_vertical"/>-->
+
+        <!--<TextView-->
+            <!--android:text="25°C"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_temperature_data"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_values"-->
+            <!--android:gravity="center"/>-->
+    <!--</TableRow>-->
+
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="@dimen/tablerow_vertical_padding"-->
+        <!--android:paddingLeft="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingRight="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingTop="@dimen/tablerow_vertical_padding">-->
+
+        <!--<TextView-->
+            <!--android:text="@string/sensor_data_moisture"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_moisture_label"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_labels"-->
+            <!--android:gravity="left|center_vertical"/>-->
+
+        <!--<TextView-->
+            <!--android:text="32%"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_moisture_data"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_values"-->
+            <!--android:gravity="center"/>-->
+    <!--</TableRow>-->
+
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="@dimen/tablerow_vertical_padding"-->
+        <!--android:paddingLeft="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingRight="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingTop="@dimen/tablerow_vertical_padding">-->
+
+        <!--<TextView-->
+            <!--android:text="@string/sensor_data_luminosity"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_luminosity_label"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_labels"-->
+            <!--android:gravity="left|center_vertical"/>-->
+
+        <!--<TextView-->
+            <!--android:text="10000 LUX"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_luminosity_data"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_values"-->
+            <!--android:gravity="center"/>-->
+    <!--</TableRow>-->
+
+    <!--<TableRow-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="@dimen/tablerow_vertical_padding"-->
+        <!--android:paddingLeft="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingRight="@dimen/tablerow_horizontal_padding"-->
+        <!--android:paddingTop="@dimen/tablerow_vertical_padding">-->
+
+        <!--<TextView-->
+            <!--android:text="@string/sensor_data_soil_moisture"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_soil_moisture_label"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_labels"-->
+            <!--android:gravity="left|center_vertical"/>-->
+
+        <!--<TextView-->
+            <!--android:text="Médio"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/txt_sensor_soil_moisture_data"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:textSize="@dimen/text_size_sensor_data_values"-->
+            <!--android:gravity="center"/>-->
+    <!--</TableRow>-->
+    <!--</TableLayout>-->
+
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="@color/colorShadows"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:id="@+id/hr_sensor_data"-->
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_below="@+id/sensor_data_fragment_table"/>-->
+</RelativeLayout>
