@@ -14,7 +14,7 @@ import Adafruit_DHT     #DHT11 lib
 ##SETUP
 ###Input
 waterSensor = gpiozero.Button(pin=22, pull_up=False)        ##WATER SENSOR AS BUTTON
-ldr=gpiozero.LightSensor(pin=18)                            ##LDR as LightSensor
+ldr=gpiozero.LightSensor(pin=24)                            ##LDR as LightSensor
 sensor=Adafruit_DHT.DHT11                                   ##DHT from Lib
 
 ###OUTPUT
@@ -28,22 +28,6 @@ mac="10:3B:59:B1:B3:C8"             #Endereço bluetooth android
 day, soil, ctrLogs = "day", "low", 1#LDR, SoilSensor, LogCounter
 freq, senscount = 60, 4             #Read Frequency, Number of Sensors
 
-
-#CLASSES
-''' This is for Threading, later on if time serves it's purpose
-
-class bluetooth (threading.Thread):
-    def __init__(self, threadID, name, counter):
-       threading.Thread.__init__(self)
-       self.threadID = threadID
-       self.name = name
-       self.counter = counter
-    def run(self):
-       print ("Starting " + self.name)
-       comms(self.name)
-       print ("Exiting " + self.name)
-
-'''
 
 ##FUNCTIONS
 
@@ -91,15 +75,6 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-#def comms(threadName):
-    #print("Starting", threadName)
-    #server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    #port=1
-    #server_socket.bind(("",port))
-    #server_socket.listen(1)
-    #client_socket, address = server_socket.accept()
-    #print("Conexão Estabelecida em", address)
-
 def server(logFrequency, numberOfLogs, logs):
     print("Updating Server")
     ##JSON OUTPUT
@@ -118,12 +93,6 @@ def server(logFrequency, numberOfLogs, logs):
     else:
         return
 
-##FIX BLUETOOTH DATA INPUT:
-def fix(x):
-    msg = msg[2:-1]
-    inputdict = json.loads(msg)
-    return inputdict
-
 
 ##FEEDBACK LOOP
 if __name__ == "__main__":
@@ -133,17 +102,6 @@ if __name__ == "__main__":
         green.on()
         print("green")
 
-        ##FOR LATER IF THERE IS TIME
-        #ThreadSetup
-        #bltThread = bluetooth(1, "Comms-1", 1)
-        #bltThread.start()
-
-        ##OutputFix
-        #try:
-        #    data=client_socket.recv(1024)
-        #    data=fix(data)
-        #except :
-        #    pass
         timebuf=str(time.strftime('%X %x'))
         actual=timebuf.split()
         print(actual)
