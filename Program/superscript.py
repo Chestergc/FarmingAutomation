@@ -136,8 +136,18 @@ if __name__ == "__main__":
         hour=str(actual[0])
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
-        temperature = int(temperature)
-        humidity = int(humidity)
+
+        ##FixVars
+        
+        if temperature is None:
+            temperature = "N/A"
+        else:
+            temperature = int(temperature)
+
+        if humidity is None:
+            humidity = "N/A"
+        else:
+            humidity = int(humidity)
 
         if(checkLight(ldr)==True):
             day="day"
