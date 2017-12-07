@@ -1,0 +1,37 @@
+{
+  "auto": false,
+  "numberOfTriggers": 3,
+  "triggers": [
+    {
+      "oneTime": true,
+      "startTime": "4:44 PM",
+      "startDate": "17/11/17",
+      "duration": 49470,
+      "daysOfTheWeek": []
+    },
+    {
+      "oneTime": false,
+      "startTime": "4:48 PM",
+      "startDate": "16/11/17",
+      "duration": 150,
+      "daysOfTheWeek": [
+        "Tuesday",
+        "Thursday",
+        "Monday",
+        "Friday",
+        "Sunday"
+      ]
+    },
+    {
+      "oneTime": false,
+      "startTime": "7:10 PM",
+      "startDate": "06/12/17",
+      "duration": 30,
+      "daysOfTheWeek": [
+        "Wednesday",
+        "Saturday",
+        "Sunday"
+      ]
+    }
+  ]
+}

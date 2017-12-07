@@ -25,13 +25,12 @@ blue=gpiozero.LED(24)                ##BLUE MEANS CRY
 
 ###Variables
 #mac="10:3B:59:B1:B3:C8"             #Endereço bluetooth android
-day, soil, ctrLogs = "day", "low", 1#LDR, SoilSensor, LogCounter
+day, soil, ctrLogs = "Escuro", "Seco", 1#LDR, SoilSensor, LogCounter
 freq = 60                           #Read Frequency
 lastdate, lasthour = "", ""         #Last Irrigation data
 
 #CLASSES
 ''' This is for Threading, later on if time serves it's purpose
-
 class bluetooth (threading.Thread):
     def __init__(self, threadID, name, counter):
        threading.Thread.__init__(self)
@@ -42,13 +41,12 @@ class bluetooth (threading.Thread):
        print ("Starting " + self.name)
        comms(self.name)
        print ("Exiting " + self.name)
-
 '''
 
 ##FUNCTIONS
 
 def checkWater(wtrsens):
-    if wtrsens.wait_for_press()==True:
+    if wtrsens.wait_for_press(timeout=1)==True:
         return True
     else:
         return False
@@ -57,6 +55,7 @@ def outputWater(checkwtr):
     toggle = checkwtr
     global lastdate
     global lasthour
+    #print("checking water")
     if toggle==True:
         ##Toggle Output;
         waterValve.on()
@@ -75,7 +74,8 @@ def outputWater(checkwtr):
         return False
 
 def checkLight(chklight):
-    if chklight.wait_for_light()==True:
+    #print("checking light")
+    if chklight.light_detected==True:
         return True
     else:
         return False
@@ -99,16 +99,7 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-def comms(threadName):
-    print("Starting", threadName)
-    server_socket=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    port=1
-    server_socket.bind(("",port))
-    server_socket.listen(1)
-    client_socket, address = server_socket.accept()
-    print("Conexão Estabelecida em", address)
-
-def server(logFrequency, numberOfLogs, logs):
+def server(logFrequency, numberOfLogs, logs, lastdate, lasthour):
     print("Updating Server")
     ##JSON OUTPUT
     bufdict = outputDict
@@ -118,12 +109,6 @@ def server(logFrequency, numberOfLogs, logs):
     with open("backlog.json", 'a') as wp:
         json.dump(bufdict, wp)
         wp.close()
-    #ServerFixSize
-    if(int(file_size(server.json).split()[0])>=10 and file_size(server.json).split()[1]=="MB"):
-        subprocess.call(['cp server.json'+'bkp'])
-        return
-    else:
-        return
 
 ##FEEDBACK LOOP
 if __name__ == "__main__":
@@ -131,37 +116,60 @@ if __name__ == "__main__":
     while True:
         #WorkingLED==ON
         green.on()
-
-        timebuf=str(time.strftime('%X %x'))
+        #fixTime variables
+        timebuf=str(time.strftime('%X %x %A %p'))
         actual=timebuf.split()
-        date=str(actual[1])
         hour=str(actual[0])
+        hour=hour[:-3]+str(actual[3])
+        date=str(actual[1])
+        weekd=str(actual[2])
+        #print("DHT try 1")
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
+        #print("DHT try 2")
         humidity, temperature=Adafruit_DHT.read_retry(sensor, 18)
 
         ##FixVars
 
         if temperature is None:
+            #print("no temperature")
             temperature = "N/A"
         else:
             temperature = int(temperature)
 
         if humidity is None:
+            #print("no humidity")
             humidity = "N/A"
         else:
             humidity = int(humidity)
 
         if(checkLight(ldr)==True):
-            day="day"
+            day="Claro"
         else:
-            day="night"
+            day="Escuro"
 
         if(checkWater(waterSensor)==True):
-            soil="High"
+            soil="Úmido"
         else:
-            soil="Low"
+            soil="Seco"
+        #print("sensor read over")
+        ##InputFile
+        client=open('client.json')
+        client=client.read()
+        inDict=dict(json.loads(client))
+        client.close()
         ##OutputWater
-        outputWater(checkWater(waterSensor))
+        if inDict['auto'] = 'True':
+            outputWater(checkWater(waterSensor))
+        elif inDict['auto'] = 'False':
+            nots = inDict['numberOfTriggers']
+            while nots>-1:
+                nots-=1
+                if inDict['triggers'][nots]['oneTime']=='True' and date==inDict['triggers'][nots]['startDate'] and hour==inDict['triggers'][nots]['startTime']:
+                    outputWater(checkWater(waterSensor))
+                elif inDict['triggers'][nots]['oneTime']=='False' and date==inDict['triggers'][nots]['startDate'] and weekd in inDict['triggers'][nots]['daysOfTheWeek']:
+                    outputWater(checkWater(waterSensor))
+                else:
+                    print('Not scheduled')
 
         ##OutputFix
         outputDict = {
